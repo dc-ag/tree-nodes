@@ -1,0 +1,34 @@
+{
+  "name": "dynamic-commerce/tree-nodes",
+  "description": "Library to handle tree structures with entities",
+  "homepage": "https://www.dc-solution.de",
+  "type": "library",
+  "license": [
+    "MIT"
+  ],
+  "authors": [
+    {
+      "name": "Max Wagner",
+      "email": "wagner@dc-solution.de"
+    }
+  ],
+  "minimum-stability": "stable",
+  "autoload": {
+    "psr-4": {
+      "TreeNodes\\": "src",
+      "TreeNodes\\Tests\\": "tests"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "TreeNodes\\Tests\\": "tests"
+    }
+  },
+  "require": {
+    "php": ">=7.4"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9",
+    "fzaninotto/faker": "^1.8"
+  }
+}
