@@ -1,7 +1,7 @@
 <?php
 
 
-namespace EntityTreeNodes\Tests;
+namespace TreeNodes\Tests\unit;
 
 use Faker\Factory;
 use Faker\Generator;

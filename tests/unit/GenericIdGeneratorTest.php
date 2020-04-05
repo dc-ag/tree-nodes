@@ -1,6 +1,6 @@
 <?php
 
-namespace EntityTreeNodes\Tests;
+namespace TreeNodes\Tests\unit;
 
 use PHPUnit\Framework\TestCase;
 use TreeNodes\GenericIdGenerator;
