@@ -12,7 +12,6 @@
       "email": "wagner@dc-solution.de"
     }
   ],
-  "minimum-stability": "stable",
   "autoload": {
     "psr-4": {
       "TreeNodes\\": "src"
