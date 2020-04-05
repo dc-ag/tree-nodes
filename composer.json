@@ -15,8 +15,7 @@
   "minimum-stability": "stable",
   "autoload": {
     "psr-4": {
-      "TreeNodes\\": "src",
-      "TreeNodes\\Tests\\": "tests"
+      "TreeNodes\\": "src"
     }
   },
   "autoload-dev": {
