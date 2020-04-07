@@ -10,13 +10,23 @@ class GenericSortableTreeNode extends GenericTreeNode implements SortableTreeNod
         canActAsSortableTreeNode;
 
     /**
+     *
      * @param SortableTreeNode $child
+     * @param integer|null $sorting
+     * @return void
      */
-    public function addChildWithSorting(SortableTreeNode $child): void
+    public function addChildWithSorting(SortableTreeNode $child, ?int $sorting = null): void
     {
-        $currentHighestSorting = $this->getNoOfChildrenWithSorting();
+        if ($sorting !== null && !array_key_exists($sorting, $this->childrenWithSorting)) {
+            $this->childrenWithSorting[$sorting] = $child;
+        } else {
+            $currentHighestSorting = 0;
+            if ($this->getNoOfChildrenWithSorting() > 0) {
+                $currentHighestSorting = max(array_keys($this->childrenWithSorting));
+            }
 
-        $this->childrenWithSorting[($currentHighestSorting + 1)] = $child;
+            $this->childrenWithSorting[($currentHighestSorting + 1)] = $child;
+        }
         parent::addChild($child);
     }
 

@@ -11,13 +11,23 @@ class GenericTypedPayloadSortableTreeNode extends GenericTypedPayloadTreeNode im
         canActAsSortableTreeNode;
 
     /**
+     *
      * @param SortableTreeNode $child
+     * @param integer|null $sorting
+     * @return void
      */
-    public function addChildWithSorting(SortableTreeNode $child): void
+    public function addChildWithSorting(SortableTreeNode $child, ?int $sorting = null): void
     {
-        $currentHighestSorting = $this->getNoOfChildrenWithSorting();
+        if ($sorting !== null && !array_key_exists($sorting, $this->childrenWithSorting)) {
+            $this->childrenWithSorting[$sorting] = $child;
+        } else {
+            $currentHighestSorting = 0;
+            if ($this->getNoOfChildrenWithSorting() > 0) {
+                $currentHighestSorting = max(array_keys($this->childrenWithSorting));
+            }
 
-        $this->childrenWithSorting[($currentHighestSorting + 1)] = $child;
+            $this->childrenWithSorting[($currentHighestSorting + 1)] = $child;
+        }
         parent::addChild($child);
     }
 
@@ -45,12 +55,15 @@ class GenericTypedPayloadSortableTreeNode extends GenericTypedPayloadTreeNode im
     }
 
     /**
+     *
      * @param TypedPayloadSortableTreeNode $child
+     * @param integer|null $sorting
+     * @return void
      */
-    public function addChildWithTypedPayloadAndWithSorting(TypedPayloadSortableTreeNode $child): void
+    public function addChildWithTypedPayloadAndWithSorting(TypedPayloadSortableTreeNode $child, ?int $sorting = null): void
     {
         if (parent::isTypedPayloadValid($child->getPayload(), $this->getPayloadType(), $this->getPayloadObjectFQDN())) {
-            $this->addChildWithSorting($child);
+            $this->addChildWithSorting($child, $sorting);
         } else {
             throw new InvalidArgumentException("Could not add child with typed payload, type has to be [{$this->getPayloadType()}]");
         }

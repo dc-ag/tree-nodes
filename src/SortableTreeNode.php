@@ -27,9 +27,12 @@ interface SortableTreeNode extends TreeNode
     public function getChildrenWithSorting(): array;
 
     /**
+     *
      * @param SortableTreeNode $child
+     * @param integer|null $sorting
+     * @return void
      */
-    public function addChildWithSorting(SortableTreeNode $child): void;
+    public function addChildWithSorting(SortableTreeNode $child, ?int $sorting = null): void;
 
     /**
      * @param SortableTreeNode $child
