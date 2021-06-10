@@ -1,7 +1,7 @@
 {
-  "name": "dynamic-commerce/tree-nodes",
+  "name": "dc-ag/tree-nodes",
   "description": "Library to handle tree structures with entities",
-  "homepage": "https://www.dc-solution.de",
+  "homepage": "https://www.dc.ag",
   "type": "library",
   "license": [
     "MIT"
@@ -9,7 +9,7 @@
   "authors": [
     {
       "name": "Max Wagner",
-      "email": "wagner@dc-solution.de"
+      "email": "mw@dc.ag"
     }
   ],
   "minimum-stability": "dev",
