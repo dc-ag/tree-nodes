@@ -19,11 +19,12 @@ class GenericTreeNodeVisitor implements TreeNodeVisitor
     }
 
     /**
-     *
-     * @param SortableTreeNode|null $node
-     * @return void
+     * 
+     * @param null|SortableTreeNode $node 
+     * @param bool $atRoot 
+     * @return void 
      */
-    public function visitPreOrder(?SortableTreeNode $node): void
+    public function visitPreOrder(?SortableTreeNode $node, bool $atRoot = true): void
     {
         if (null === $node) {
             return;
@@ -36,16 +37,19 @@ class GenericTreeNodeVisitor implements TreeNodeVisitor
             }
         }
         ($this->visitorCallable)($node);
-        $this->visitPreOrder($leftmostChild);
-        $this->visitPreOrder($node->getRightSibling());
+        $this->visitPreOrder($leftmostChild, false);
+        if ($atRoot === false) {
+            $this->visitPreOrder($node->getRightSibling(), false);
+        }
     }
 
     /**
-     *
-     * @param SortableTreeNode|null $node
-     * @return void
+     * 
+     * @param null|SortableTreeNode $node 
+     * @param bool $atRoot 
+     * @return void 
      */
-    public function visitPostOrder(?SortableTreeNode $node): void
+    public function visitPostOrder(?SortableTreeNode $node, bool $atRoot = true): void
     {
         if (null === $node) {
             return;
@@ -58,8 +62,10 @@ class GenericTreeNodeVisitor implements TreeNodeVisitor
             }
         }
 
-        $this->visitPostOrder($leftmostChild);
+        $this->visitPostOrder($leftmostChild, false);
         ($this->visitorCallable)($node);
-        $this->visitPostOrder($node->getRightSibling());
+        if ($atRoot === false) {
+            $this->visitPostOrder($node->getRightSibling(), false);
+        }
     }
 }

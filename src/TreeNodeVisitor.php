@@ -8,16 +8,18 @@ namespace TreeNodes;
 interface TreeNodeVisitor
 {
     /**
-     *
-     * @param SortableTreeNode|null $node
-     * @return void
+     * 
+     * @param null|SortableTreeNode $node 
+     * @param bool $atRoot 
+     * @return void 
      */
-    public function visitPreOrder(?SortableTreeNode $node): void;
+    public function visitPreOrder(?SortableTreeNode $node, bool $atRoot = true): void;
 
     /**
-     *
-     * @param SortableTreeNode|null $node
-     * @return void
+     * 
+     * @param null|SortableTreeNode $node 
+     * @param bool $atRoot 
+     * @return void 
      */
-    public function visitPostOrder(?SortableTreeNode $node): void;
+    public function visitPostOrder(?SortableTreeNode $node, bool $atRoot = true): void;
 }
