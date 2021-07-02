@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace TreeNodes;
 
+use InvalidArgumentException;
+
 class GenericTreeNode implements TreeNode
 {
     private string $id;
     private $payload;
     private ?TreeNode $parent = null;
     private array $children = [];
+    private ?string $rootId = null;
 
     /**
      * GenericTreeNode constructor.
@@ -24,6 +27,7 @@ class GenericTreeNode implements TreeNode
 
         $this->id = $idGenerator->getId();
         $this->payload = $payload;
+        $this->rootId = $this->id;
     }
 
     /**
@@ -76,6 +80,11 @@ class GenericTreeNode implements TreeNode
     public function setParent(?TreeNode $parent): void
     {
         $this->parent = $parent;
+        if ($parent instanceof TreeNode) {
+            $this->setRootId($parent->getRootId());
+        } else {
+            $this->setRootId($this->getId());
+        }
     }
 
     /**
@@ -186,5 +195,35 @@ class GenericTreeNode implements TreeNode
         $height = $maxChildHeight + 1;
 
         return $height;
+    }
+
+    /**
+     * 
+     * @return null|string 
+     */
+    public function getRootId(): ?string
+    {
+        return $this->rootId;
+    }
+
+    /**
+     * 
+     * @param null|string $rootId 
+     * @return void 
+     * @throws InvalidArgumentException 
+     */
+    public function setRootId(?string $rootId): void
+    {
+        if($this->getRootForTreeNode()->getId() !== $rootId) {
+            throw new InvalidArgumentException("Given rootId [$rootId] has to match id of currrent node root node id");
+        }
+
+        $this->rootId = $rootId;
+        if ($this->getNoOfChildren() > 0) {
+            /** @var TreeNode $child */
+            foreach ($this->getChildren() as $child) {
+                $child->setRootId($rootId);
+            }
+        }
     }
 }

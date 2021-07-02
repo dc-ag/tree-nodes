@@ -79,4 +79,17 @@ interface TreeNode
      * @return int
      */
     public function getHeight(): int;
+
+    /**
+     * 
+     * @return null|string 
+     */
+    public function getRootId(): ?string;
+
+   /**
+    * 
+    * @param null|string $rootId 
+    * @return void 
+    */
+    public function setRootId(?string $rootId): void;
 }
