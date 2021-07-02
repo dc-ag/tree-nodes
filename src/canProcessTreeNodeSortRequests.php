@@ -1,7 +1,8 @@
 <?php
 
-namespace TreeNodes;
+declare(strict_types=1);
 
+namespace TreeNodes;
 
 trait canProcessTreeNodeSortRequests
 {

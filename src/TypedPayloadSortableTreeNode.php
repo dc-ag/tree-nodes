@@ -1,8 +1,8 @@
 <?php
 
+declare(strict_types=1);
 
 namespace TreeNodes;
-
 
 interface TypedPayloadSortableTreeNode extends TypedPayloadTreeNode, SortableTreeNode
 {
