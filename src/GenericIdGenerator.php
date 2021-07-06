@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace TreeNodes;
 
-
 class GenericIdGenerator implements IdGenerator
 {
     public function getId()
@@ -50,10 +49,9 @@ class GenericIdGenerator implements IdGenerator
     public static function isUUIDv4Valid($uuid): bool
     {
         return preg_match(
-                '/^\{?[0-9a-f]{8}\-?[0-9a-f]{4}\-?[0-9a-f]{4}\-?' .
+            '/^\{?[0-9a-f]{8}\-?[0-9a-f]{4}\-?[0-9a-f]{4}\-?' .
                 '[0-9a-f]{4}\-?[0-9a-f]{12}\}?$/i',
-                $uuid
-            ) === 1;
+            $uuid
+        ) === 1;
     }
-
 }

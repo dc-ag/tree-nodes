@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
 
 namespace TreeNodes;
 
+use InvalidArgumentException;
 
 class GenericTreeNode implements TreeNode
 {
@@ -10,6 +12,7 @@ class GenericTreeNode implements TreeNode
     private $payload;
     private ?TreeNode $parent = null;
     private array $children = [];
+    private ?string $rootId = null;
 
     /**
      * GenericTreeNode constructor.
@@ -24,6 +27,7 @@ class GenericTreeNode implements TreeNode
 
         $this->id = $idGenerator->getId();
         $this->payload = $payload;
+        $this->rootId = $this->id;
     }
 
     /**
@@ -76,6 +80,14 @@ class GenericTreeNode implements TreeNode
     public function setParent(?TreeNode $parent): void
     {
         $this->parent = $parent;
+        $this->rootId = $parent !== null ? $parent->getRootId() : null;
+
+        if ($this->getNoOfChildren() > 0) {
+            /** @var TreeNode $child */
+            foreach ($this->getChildren() as $child) {
+                $child->setParent($this);
+            }
+        }
     }
 
     /**
@@ -186,5 +198,14 @@ class GenericTreeNode implements TreeNode
         $height = $maxChildHeight + 1;
 
         return $height;
+    }
+
+    /**
+     * 
+     * @return null|string 
+     */
+    public function getRootId(): ?string
+    {
+        return $this->rootId;
     }
 }

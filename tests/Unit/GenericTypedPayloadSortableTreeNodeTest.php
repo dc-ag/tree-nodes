@@ -1,8 +1,8 @@
 <?php
 
+declare(strict_types=1);
 
 namespace TreeNodes\Tests\Unit;
-
 
 use Faker\Factory;
 use Faker\Generator;

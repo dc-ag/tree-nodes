@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace TreeNodes;
 
 /**
@@ -77,4 +79,10 @@ interface TreeNode
      * @return int
      */
     public function getHeight(): int;
+
+    /**
+     * 
+     * @return null|string 
+     */
+    public function getRootId(): ?string;
 }

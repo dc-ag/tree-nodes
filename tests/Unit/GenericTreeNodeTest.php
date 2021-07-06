@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
 
 namespace TreeNodes\Tests\Unit;
 
 use Faker\Factory;
 use Faker\Generator;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use TreeNodes\GenericTreeNode;
 
@@ -206,5 +208,89 @@ final class GenericTreeNodeTest extends TestCase
         $treeNode->addChild($treeNodeChildThird);
 
         $this->assertTrue($treeNode->getHeight() === 2);
+    }
+
+    public function testGetterRootIdAddingSubTreeToRoot(): void
+    {
+        $payloadChildFirst = $this->faker->domainName;
+        $treeNodeChildFirst = new GenericTreeNode($payloadChildFirst);
+
+        $payloadChildSecond = $this->faker->domainName;
+        $treeNodeChildSecond = new GenericTreeNode($payloadChildSecond);
+
+        $payloadChildThird = $this->faker->domainName;
+        $treeNodeChildThird = new GenericTreeNode($payloadChildThird);
+
+        $payloadChildThirdFirstChild = $this->faker->domainName;
+        $treeNodeChildThirdFirstChild = new GenericTreeNode($payloadChildThirdFirstChild);
+        $treeNodeChildThird->addChild($treeNodeChildThirdFirstChild);
+
+        $payloadChildThirdFirstChildFirstChild = $this->faker->domainName;
+        $treeNodeChildThirdFirstChildFirstChild = new GenericTreeNode($payloadChildThirdFirstChildFirstChild);
+        $treeNodeChildThirdFirstChild->addChild($treeNodeChildThirdFirstChildFirstChild);
+
+        $payloadChildThirdFirstChildSecondChild = $this->faker->domainName;
+        $treeNodeChildThirdFirstChildSecondChild = new GenericTreeNode($payloadChildThirdFirstChildSecondChild);
+        $treeNodeChildThirdFirstChild->addChild($treeNodeChildThirdFirstChildSecondChild);
+
+        $payloadChildThirdSecondChild = $this->faker->domainName;
+        $treeNodeChildThirdSecondChild = new GenericTreeNode($payloadChildThirdSecondChild);
+        $treeNodeChildThird->addChild($treeNodeChildThirdSecondChild);
+
+        $payload = $this->faker->domainName;
+        $rootTreeNode = new GenericTreeNode($payload);
+        $rootTreeNode->addChild($treeNodeChildFirst);
+        $rootTreeNode->addChild($treeNodeChildSecond);
+        $rootTreeNode->addChild($treeNodeChildThird);
+
+        $this->assertEquals($rootTreeNode->getRootId(),$treeNodeChildFirst->getRootId());
+        $this->assertEquals($rootTreeNode->getRootId(),$treeNodeChildSecond->getRootId());
+        $this->assertEquals($rootTreeNode->getRootId(),$treeNodeChildThird->getRootId());
+        $this->assertEquals($rootTreeNode->getRootId(),$treeNodeChildThirdFirstChild->getRootId());
+        $this->assertEquals($rootTreeNode->getRootId(),$treeNodeChildThirdFirstChildFirstChild->getRootId());
+        $this->assertEquals($rootTreeNode->getRootId(),$treeNodeChildThirdFirstChildSecondChild->getRootId());
+        $this->assertEquals($rootTreeNode->getRootId(),$treeNodeChildThirdSecondChild->getRootId());
+    }
+
+    public function testGetterRootIdAddingChildsFromTopToBottom(): void
+    {
+        $payload = $this->faker->domainName;
+        $rootTreeNode = new GenericTreeNode($payload);
+        
+        $payloadChildFirst = $this->faker->domainName;
+        $treeNodeChildFirst = new GenericTreeNode($payloadChildFirst);
+        $rootTreeNode->addChild($treeNodeChildFirst);
+
+        $payloadChildSecond = $this->faker->domainName;
+        $treeNodeChildSecond = new GenericTreeNode($payloadChildSecond);
+        $rootTreeNode->addChild($treeNodeChildSecond);
+
+        $payloadChildThird = $this->faker->domainName;
+        $treeNodeChildThird = new GenericTreeNode($payloadChildThird);
+        $rootTreeNode->addChild($treeNodeChildThird);
+
+        $payloadChildThirdFirstChild = $this->faker->domainName;
+        $treeNodeChildThirdFirstChild = new GenericTreeNode($payloadChildThirdFirstChild);
+        $treeNodeChildThird->addChild($treeNodeChildThirdFirstChild);
+
+        $payloadChildThirdFirstChildFirstChild = $this->faker->domainName;
+        $treeNodeChildThirdFirstChildFirstChild = new GenericTreeNode($payloadChildThirdFirstChildFirstChild);
+        $treeNodeChildThirdFirstChild->addChild($treeNodeChildThirdFirstChildFirstChild);
+
+        $payloadChildThirdFirstChildSecondChild = $this->faker->domainName;
+        $treeNodeChildThirdFirstChildSecondChild = new GenericTreeNode($payloadChildThirdFirstChildSecondChild);
+        $treeNodeChildThirdFirstChild->addChild($treeNodeChildThirdFirstChildSecondChild);
+
+        $payloadChildThirdSecondChild = $this->faker->domainName;
+        $treeNodeChildThirdSecondChild = new GenericTreeNode($payloadChildThirdSecondChild);
+        $treeNodeChildThird->addChild($treeNodeChildThirdSecondChild);
+
+        $this->assertEquals($rootTreeNode->getRootId(),$treeNodeChildFirst->getRootId());
+        $this->assertEquals($rootTreeNode->getRootId(),$treeNodeChildSecond->getRootId());
+        $this->assertEquals($rootTreeNode->getRootId(),$treeNodeChildThird->getRootId());
+        $this->assertEquals($rootTreeNode->getRootId(),$treeNodeChildThirdFirstChild->getRootId());
+        $this->assertEquals($rootTreeNode->getRootId(),$treeNodeChildThirdFirstChildFirstChild->getRootId());
+        $this->assertEquals($rootTreeNode->getRootId(),$treeNodeChildThirdFirstChildSecondChild->getRootId());
+        $this->assertEquals($rootTreeNode->getRootId(),$treeNodeChildThirdSecondChild->getRootId());
     }
 }
