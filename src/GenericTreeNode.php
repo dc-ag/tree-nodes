@@ -80,10 +80,13 @@ class GenericTreeNode implements TreeNode
     public function setParent(?TreeNode $parent): void
     {
         $this->parent = $parent;
-        if ($parent instanceof TreeNode) {
-            $this->setRootId($parent->getRootId());
-        } else {
-            $this->setRootId($this->getId());
+        $this->rootId = $parent !== null ? $parent->getRootId() : null;
+
+        if ($this->getNoOfChildren() > 0) {
+            /** @var TreeNode $child */
+            foreach ($this->getChildren() as $child) {
+                $child->setParent($this);
+            }
         }
     }
 
@@ -204,26 +207,5 @@ class GenericTreeNode implements TreeNode
     public function getRootId(): ?string
     {
         return $this->rootId;
-    }
-
-    /**
-     * 
-     * @param null|string $rootId 
-     * @return void 
-     * @throws InvalidArgumentException 
-     */
-    public function setRootId(?string $rootId): void
-    {
-        if($this->getRootForTreeNode()->getId() !== $rootId) {
-            throw new InvalidArgumentException("Given rootId [$rootId] has to match id of currrent node root node id");
-        }
-
-        $this->rootId = $rootId;
-        if ($this->getNoOfChildren() > 0) {
-            /** @var TreeNode $child */
-            foreach ($this->getChildren() as $child) {
-                $child->setRootId($rootId);
-            }
-        }
     }
 }
