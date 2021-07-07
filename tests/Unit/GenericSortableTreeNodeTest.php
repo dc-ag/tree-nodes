@@ -26,18 +26,18 @@ final class GenericSortableTreeNodeTest extends TestCase
     public function testAddChildWithSorting(): void
     {
         $payload = $this->faker->domainName;
-        $sortableTreeNode = new GenericSortableTreeNode($payload);
+        $sortableTreeNode = new GenericSortableTreeNode(null, $payload);
 
         $payloadFirstChild = $this->faker->domainName;
-        $sortableTreeNodeFirstChild = new GenericSortableTreeNode($payloadFirstChild);
+        $sortableTreeNodeFirstChild = new GenericSortableTreeNode(null, $payloadFirstChild);
         $sortableTreeNode->addChildWithSorting($sortableTreeNodeFirstChild);
 
         $payloadSecondChild = $this->faker->domainName;
-        $sortableTreeNodeSecondChild = new GenericSortableTreeNode($payloadSecondChild);
+        $sortableTreeNodeSecondChild = new GenericSortableTreeNode(null, $payloadSecondChild);
         $sortableTreeNode->addChildWithSorting($sortableTreeNodeSecondChild);
 
         $payloadThirdChild = $this->faker->domainName;
-        $sortableTreeNodeThirdChild = new GenericSortableTreeNode($payloadThirdChild);
+        $sortableTreeNodeThirdChild = new GenericSortableTreeNode(null, $payloadThirdChild);
         $sortableTreeNode->addChildWithSorting($sortableTreeNodeThirdChild);
 
         $this->assertTrue($sortableTreeNodeFirstChild->getPerLevelSorting() === 1);
@@ -48,18 +48,18 @@ final class GenericSortableTreeNodeTest extends TestCase
     public function testRemoveChildWithSorting(): void
     {
         $payload = $this->faker->domainName;
-        $sortableTreeNode = new GenericSortableTreeNode($payload);
+        $sortableTreeNode = new GenericSortableTreeNode(null, $payload);
 
         $payloadFirstChild = $this->faker->domainName;
-        $sortableTreeNodeFirstChild = new GenericSortableTreeNode($payloadFirstChild);
+        $sortableTreeNodeFirstChild = new GenericSortableTreeNode(null, $payloadFirstChild);
         $sortableTreeNode->addChildWithSorting($sortableTreeNodeFirstChild);
 
         $payloadSecondChild = $this->faker->domainName;
-        $sortableTreeNodeSecondChild = new GenericSortableTreeNode($payloadSecondChild);
+        $sortableTreeNodeSecondChild = new GenericSortableTreeNode(null, $payloadSecondChild);
         $sortableTreeNode->addChildWithSorting($sortableTreeNodeSecondChild);
 
         $payloadThirdChild = $this->faker->domainName;
-        $sortableTreeNodeThirdChild = new GenericSortableTreeNode($payloadThirdChild);
+        $sortableTreeNodeThirdChild = new GenericSortableTreeNode(null, $payloadThirdChild);
         $sortableTreeNode->addChildWithSorting($sortableTreeNodeThirdChild);
 
         $this->assertTrue($sortableTreeNode->getNoOfChildrenWithSorting() === 3);
@@ -77,14 +77,14 @@ final class GenericSortableTreeNodeTest extends TestCase
     public function testGetterPerLevelSorting(): void
     {
         $payload = $this->faker->domainName;
-        $sortableTreeNode = new GenericSortableTreeNode($payload);
+        $sortableTreeNode = new GenericSortableTreeNode(null, $payload);
 
         $payloadFirstChild = $this->faker->domainName;
-        $sortableTreeNodeFirstChild = new GenericSortableTreeNode($payloadFirstChild);
+        $sortableTreeNodeFirstChild = new GenericSortableTreeNode(null, $payloadFirstChild);
         $sortableTreeNode->addChildWithSorting($sortableTreeNodeFirstChild);
 
         $payloadSecondChild = $this->faker->domainName;
-        $sortableTreeNodeSecondChild = new GenericSortableTreeNode($payloadSecondChild);
+        $sortableTreeNodeSecondChild = new GenericSortableTreeNode(null, $payloadSecondChild);
         $sortableTreeNode->addChildWithSorting($sortableTreeNodeSecondChild);
 
         $this->assertTrue($sortableTreeNodeFirstChild->getPerLevelSorting() === 1);
@@ -94,18 +94,18 @@ final class GenericSortableTreeNodeTest extends TestCase
     public function testGetterLeftSibling(): void
     {
         $payload = $this->faker->domainName;
-        $sortableTreeNode = new GenericSortableTreeNode($payload);
+        $sortableTreeNode = new GenericSortableTreeNode(null, $payload);
 
         $payloadFirstChild = $this->faker->domainName;
-        $sortableTreeNodeFirstChild = new GenericSortableTreeNode($payloadFirstChild);
+        $sortableTreeNodeFirstChild = new GenericSortableTreeNode(null, $payloadFirstChild);
         $sortableTreeNode->addChildWithSorting($sortableTreeNodeFirstChild);
 
         $payloadSecondChild = $this->faker->domainName;
-        $sortableTreeNodeSecondChild = new GenericSortableTreeNode($payloadSecondChild);
+        $sortableTreeNodeSecondChild = new GenericSortableTreeNode(null, $payloadSecondChild);
         $sortableTreeNode->addChildWithSorting($sortableTreeNodeSecondChild);
 
         $payloadThirdChild = $this->faker->domainName;
-        $sortableTreeNodeThirdChild = new GenericSortableTreeNode($payloadThirdChild);
+        $sortableTreeNodeThirdChild = new GenericSortableTreeNode(null, $payloadThirdChild);
         $sortableTreeNode->addChildWithSorting($sortableTreeNodeThirdChild);
 
         $this->assertTrue($sortableTreeNodeThirdChild->getLeftSibling() === $sortableTreeNodeSecondChild);
@@ -116,18 +116,18 @@ final class GenericSortableTreeNodeTest extends TestCase
     public function testGetterRightSibling(): void
     {
         $payload = $this->faker->domainName;
-        $sortableTreeNode = new GenericSortableTreeNode($payload);
+        $sortableTreeNode = new GenericSortableTreeNode(null, $payload);
 
         $payloadFirstChild = $this->faker->domainName;
-        $sortableTreeNodeFirstChild = new GenericSortableTreeNode($payloadFirstChild);
+        $sortableTreeNodeFirstChild = new GenericSortableTreeNode(null, $payloadFirstChild);
         $sortableTreeNode->addChildWithSorting($sortableTreeNodeFirstChild);
 
         $payloadSecondChild = $this->faker->domainName;
-        $sortableTreeNodeSecondChild = new GenericSortableTreeNode($payloadSecondChild);
+        $sortableTreeNodeSecondChild = new GenericSortableTreeNode(null, $payloadSecondChild);
         $sortableTreeNode->addChildWithSorting($sortableTreeNodeSecondChild);
 
         $payloadThirdChild = $this->faker->domainName;
-        $sortableTreeNodeThirdChild = new GenericSortableTreeNode($payloadThirdChild);
+        $sortableTreeNodeThirdChild = new GenericSortableTreeNode(null, $payloadThirdChild);
         $sortableTreeNode->addChildWithSorting($sortableTreeNodeThirdChild);
 
 
@@ -139,18 +139,18 @@ final class GenericSortableTreeNodeTest extends TestCase
     public function testGetterChildrenWithSorting(): void
     {
         $payload = $this->faker->domainName;
-        $sortableTreeNode = new GenericSortableTreeNode($payload);
+        $sortableTreeNode = new GenericSortableTreeNode(null, $payload);
 
         $payloadFirstChild = $this->faker->domainName;
-        $sortableTreeNodeFirstChild = new GenericSortableTreeNode($payloadFirstChild);
+        $sortableTreeNodeFirstChild = new GenericSortableTreeNode(null, $payloadFirstChild);
         $sortableTreeNode->addChildWithSorting($sortableTreeNodeFirstChild);
 
         $payloadSecondChild = $this->faker->domainName;
-        $sortableTreeNodeSecondChild = new GenericSortableTreeNode($payloadSecondChild);
+        $sortableTreeNodeSecondChild = new GenericSortableTreeNode(null, $payloadSecondChild);
         $sortableTreeNode->addChildWithSorting($sortableTreeNodeSecondChild);
 
         $payloadThirdChild = $this->faker->domainName;
-        $sortableTreeNodeThirdChild = new GenericSortableTreeNode($payloadThirdChild);
+        $sortableTreeNodeThirdChild = new GenericSortableTreeNode(null, $payloadThirdChild);
         $sortableTreeNode->addChildWithSorting($sortableTreeNodeThirdChild);
 
         $this->assertTrue(is_array($sortableTreeNode->getChildrenWithSorting()) && count($sortableTreeNode->getChildrenWithSorting()) === 3);
@@ -159,18 +159,18 @@ final class GenericSortableTreeNodeTest extends TestCase
     public function testGetterNoChildrenWithSorting(): void
     {
         $payload = $this->faker->domainName;
-        $sortableTreeNode = new GenericSortableTreeNode($payload);
+        $sortableTreeNode = new GenericSortableTreeNode(null, $payload);
 
         $payloadFirstChild = $this->faker->domainName;
-        $sortableTreeNodeFirstChild = new GenericSortableTreeNode($payloadFirstChild);
+        $sortableTreeNodeFirstChild = new GenericSortableTreeNode(null, $payloadFirstChild);
         $sortableTreeNode->addChildWithSorting($sortableTreeNodeFirstChild);
 
         $payloadSecondChild = $this->faker->domainName;
-        $sortableTreeNodeSecondChild = new GenericSortableTreeNode($payloadSecondChild);
+        $sortableTreeNodeSecondChild = new GenericSortableTreeNode(null, $payloadSecondChild);
         $sortableTreeNode->addChildWithSorting($sortableTreeNodeSecondChild);
 
         $payloadThirdChild = $this->faker->domainName;
-        $sortableTreeNodeThirdChild = new GenericSortableTreeNode($payloadThirdChild);
+        $sortableTreeNodeThirdChild = new GenericSortableTreeNode(null, $payloadThirdChild);
         $sortableTreeNode->addChildWithSorting($sortableTreeNodeThirdChild);
 
         $this->assertTrue($sortableTreeNode->getNoOfChildrenWithSorting() === 3);
@@ -179,22 +179,22 @@ final class GenericSortableTreeNodeTest extends TestCase
     public function testGetterNoOfDescendantsWithSorting(): void
     {
         $payload = $this->faker->domainName;
-        $sortableTreeNode = new GenericSortableTreeNode($payload);
+        $sortableTreeNode = new GenericSortableTreeNode(null, $payload);
 
         $payloadFirstChild = $this->faker->domainName;
-        $sortableTreeNodeFirstChild = new GenericSortableTreeNode($payloadFirstChild);
+        $sortableTreeNodeFirstChild = new GenericSortableTreeNode(null, $payloadFirstChild);
         $sortableTreeNode->addChildWithSorting($sortableTreeNodeFirstChild);
 
         $payloadSecondChild = $this->faker->domainName;
-        $sortableTreeNodeSecondChild = new GenericSortableTreeNode($payloadSecondChild);
+        $sortableTreeNodeSecondChild = new GenericSortableTreeNode(null, $payloadSecondChild);
         $sortableTreeNode->addChildWithSorting($sortableTreeNodeSecondChild);
 
         $payloadSecondChildFirstChild = $this->faker->domainName;
-        $sortableTreeNodeSecondChildFirstChild = new GenericSortableTreeNode($payloadSecondChildFirstChild);
+        $sortableTreeNodeSecondChildFirstChild = new GenericSortableTreeNode(null, $payloadSecondChildFirstChild);
         $sortableTreeNodeSecondChild->addChildWithSorting($sortableTreeNodeSecondChildFirstChild);
 
         $payloadThirdChild = $this->faker->domainName;
-        $sortableTreeNodeThirdChild = new GenericSortableTreeNode($payloadThirdChild);
+        $sortableTreeNodeThirdChild = new GenericSortableTreeNode(null, $payloadThirdChild);
         $sortableTreeNode->addChildWithSorting($sortableTreeNodeThirdChild);
 
         $this->assertTrue($sortableTreeNode->getNoOfDescendantsWithSorting() === 4);
@@ -203,12 +203,12 @@ final class GenericSortableTreeNodeTest extends TestCase
     public function testIsLeafWithSorting(): void
     {
         $payload = $this->faker->domainName;
-        $sortableTreeNode = new GenericSortableTreeNode($payload);
+        $sortableTreeNode = new GenericSortableTreeNode(null, $payload);
 
         $this->assertTrue($sortableTreeNode->isLeafWithSorting());
 
         $payloadFirstChild = $this->faker->domainName;
-        $sortableTreeNodeFirstChild = new GenericSortableTreeNode($payloadFirstChild);
+        $sortableTreeNodeFirstChild = new GenericSortableTreeNode(null, $payloadFirstChild);
         $sortableTreeNode->addChildWithSorting($sortableTreeNodeFirstChild);
 
         $this->assertTrue(!$sortableTreeNode->isLeafWithSorting());
@@ -217,14 +217,14 @@ final class GenericSortableTreeNodeTest extends TestCase
     public function testGetterHeightWithSorting(): void
     {
         $payload = $this->faker->domainName;
-        $sortableTreeNode = new GenericSortableTreeNode($payload);
+        $sortableTreeNode = new GenericSortableTreeNode(null, $payload);
 
         $payloadFirstChild = $this->faker->domainName;
-        $sortableTreeNodeFirstChild = new GenericSortableTreeNode($payloadFirstChild);
+        $sortableTreeNodeFirstChild = new GenericSortableTreeNode(null, $payloadFirstChild);
         $sortableTreeNode->addChildWithSorting($sortableTreeNodeFirstChild);
 
         $payloadFirstChildFirstChild = $this->faker->domainName;
-        $sortableTreeNodeFirstChildFirstChild = new GenericSortableTreeNode($payloadFirstChild);
+        $sortableTreeNodeFirstChildFirstChild = new GenericSortableTreeNode(null, $payloadFirstChild);
         $sortableTreeNodeFirstChild->addChildWithSorting($sortableTreeNodeFirstChildFirstChild);
 
         $this->assertTrue($sortableTreeNode->getHeightWithSorting() === 2);
@@ -233,26 +233,26 @@ final class GenericSortableTreeNodeTest extends TestCase
     public function testProcessSortRequestMoveUp(): void
     {
         $payload = $this->faker->domainName;
-        $sortableTreeNode = new GenericSortableTreeNode($payload);
+        $sortableTreeNode = new GenericSortableTreeNode(null, $payload);
 
         $payloadFirstChild = $this->faker->domainName;
-        $sortableTreeNodeFirstChild = new GenericSortableTreeNode($payloadFirstChild);
+        $sortableTreeNodeFirstChild = new GenericSortableTreeNode(null, $payloadFirstChild);
         $sortableTreeNode->addChildWithSorting($sortableTreeNodeFirstChild);
 
         $payloadSecondChild = $this->faker->domainName;
-        $sortableTreeNodeSecondChild = new GenericSortableTreeNode($payloadSecondChild);
+        $sortableTreeNodeSecondChild = new GenericSortableTreeNode(null, $payloadSecondChild);
         $sortableTreeNode->addChildWithSorting($sortableTreeNodeSecondChild);
 
         $payloadThirdChild = $this->faker->domainName;
-        $sortableTreeNodeThirdChild = new GenericSortableTreeNode($payloadThirdChild);
+        $sortableTreeNodeThirdChild = new GenericSortableTreeNode(null, $payloadThirdChild);
         $sortableTreeNode->addChildWithSorting($sortableTreeNodeThirdChild);
 
         $payloadFourthChild = $this->faker->domainName;
-        $sortableTreeNodeFourthChild = new GenericSortableTreeNode($payloadFourthChild);
+        $sortableTreeNodeFourthChild = new GenericSortableTreeNode(null, $payloadFourthChild);
         $sortableTreeNode->addChildWithSorting($sortableTreeNodeFourthChild);
 
         $payloadFifthChild = $this->faker->domainName;
-        $sortableTreeNodeFifthChild = new GenericSortableTreeNode($payloadFifthChild);
+        $sortableTreeNodeFifthChild = new GenericSortableTreeNode(null, $payloadFifthChild);
         $sortableTreeNode->addChildWithSorting($sortableTreeNodeFifthChild);
 
         $this->assertTrue($sortableTreeNodeFirstChild->getPerLevelSorting() === 1);
@@ -273,26 +273,26 @@ final class GenericSortableTreeNodeTest extends TestCase
     public function testProcessSortRequestMoveDown(): void
     {
         $payload = $this->faker->domainName;
-        $sortableTreeNode = new GenericSortableTreeNode($payload);
+        $sortableTreeNode = new GenericSortableTreeNode(null, $payload);
 
         $payloadFirstChild = $this->faker->domainName;
-        $sortableTreeNodeFirstChild = new GenericSortableTreeNode($payloadFirstChild);
+        $sortableTreeNodeFirstChild = new GenericSortableTreeNode(null, $payloadFirstChild);
         $sortableTreeNode->addChildWithSorting($sortableTreeNodeFirstChild);
 
         $payloadSecondChild = $this->faker->domainName;
-        $sortableTreeNodeSecondChild = new GenericSortableTreeNode($payloadSecondChild);
+        $sortableTreeNodeSecondChild = new GenericSortableTreeNode(null, $payloadSecondChild);
         $sortableTreeNode->addChildWithSorting($sortableTreeNodeSecondChild);
 
         $payloadThirdChild = $this->faker->domainName;
-        $sortableTreeNodeThirdChild = new GenericSortableTreeNode($payloadThirdChild);
+        $sortableTreeNodeThirdChild = new GenericSortableTreeNode(null, $payloadThirdChild);
         $sortableTreeNode->addChildWithSorting($sortableTreeNodeThirdChild);
 
         $payloadFourthChild = $this->faker->domainName;
-        $sortableTreeNodeFourthChild = new GenericSortableTreeNode($payloadFourthChild);
+        $sortableTreeNodeFourthChild = new GenericSortableTreeNode(null, $payloadFourthChild);
         $sortableTreeNode->addChildWithSorting($sortableTreeNodeFourthChild);
 
         $payloadFifthChild = $this->faker->domainName;
-        $sortableTreeNodeFifthChild = new GenericSortableTreeNode($payloadFifthChild);
+        $sortableTreeNodeFifthChild = new GenericSortableTreeNode(null, $payloadFifthChild);
         $sortableTreeNode->addChildWithSorting($sortableTreeNodeFifthChild);
 
         $this->assertTrue($sortableTreeNodeFirstChild->getPerLevelSorting() === 1);
@@ -312,36 +312,36 @@ final class GenericSortableTreeNodeTest extends TestCase
 
     public function testProcessMoveRequest(): void
     {
-        $sortableTreeNode = new GenericSortableTreeNode("root");
+        $sortableTreeNode = new GenericSortableTreeNode(null, "root");
 
-        $sortableTreeNodeFirstChild = new GenericSortableTreeNode("1");
+        $sortableTreeNodeFirstChild = new GenericSortableTreeNode(null, "1");
         $sortableTreeNode->addChildWithSorting($sortableTreeNodeFirstChild);
 
-        $sortableTreeNodeSecondChild = new GenericSortableTreeNode("2");
+        $sortableTreeNodeSecondChild = new GenericSortableTreeNode(null, "2");
         $sortableTreeNode->addChildWithSorting($sortableTreeNodeSecondChild);
 
-        $sortableTreeNodeSecondChildFirstChild = new GenericSortableTreeNode("2.1");
+        $sortableTreeNodeSecondChildFirstChild = new GenericSortableTreeNode(null, "2.1");
         $sortableTreeNodeSecondChild->addChildWithSorting($sortableTreeNodeSecondChildFirstChild);
 
-        $sortableTreeNodeSecondChildFirstChildFirstChild = new GenericSortableTreeNode("2.1.1");
+        $sortableTreeNodeSecondChildFirstChildFirstChild = new GenericSortableTreeNode(null, "2.1.1");
         $sortableTreeNodeSecondChildFirstChild->addChildWithSorting($sortableTreeNodeSecondChildFirstChildFirstChild);
 
-        $sortableTreeNodeSecondChildFirstChildSecondChild = new GenericSortableTreeNode("2.1.2");
+        $sortableTreeNodeSecondChildFirstChildSecondChild = new GenericSortableTreeNode(null, "2.1.2");
         $sortableTreeNodeSecondChildFirstChild->addChildWithSorting($sortableTreeNodeSecondChildFirstChildSecondChild);
 
-        $sortableTreeNodeSecondChildSecondChild = new GenericSortableTreeNode("2.2");
+        $sortableTreeNodeSecondChildSecondChild = new GenericSortableTreeNode(null, "2.2");
         $sortableTreeNodeSecondChild->addChildWithSorting($sortableTreeNodeSecondChildSecondChild);
 
-        $sortableTreeNodeThirdChild = new GenericSortableTreeNode("3");
+        $sortableTreeNodeThirdChild = new GenericSortableTreeNode(null, "3");
         $sortableTreeNode->addChildWithSorting($sortableTreeNodeThirdChild);
 
-        $sortableTreeNodeThirdChildFirstChild = new GenericSortableTreeNode("3.1");
+        $sortableTreeNodeThirdChildFirstChild = new GenericSortableTreeNode(null, "3.1");
         $sortableTreeNodeThirdChild->addChildWithSorting($sortableTreeNodeThirdChildFirstChild);
 
-        $sortableTreeNodeFourthChild = new GenericSortableTreeNode("4");
+        $sortableTreeNodeFourthChild = new GenericSortableTreeNode(null, "4");
         $sortableTreeNode->addChildWithSorting($sortableTreeNodeFourthChild);
 
-        $sortableTreeNodeFifthChild = new GenericSortableTreeNode("5");
+        $sortableTreeNodeFifthChild = new GenericSortableTreeNode(null, "5");
         $sortableTreeNode->addChildWithSorting($sortableTreeNodeFifthChild);
 
         $this->assertTrue($sortableTreeNodeFirstChild->getPerLevelSorting() === 1);
