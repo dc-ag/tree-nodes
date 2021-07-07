@@ -42,34 +42,34 @@ final class GenericTypedPayloadTreeNodeTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $payload = $this->faker->domainName;
-        new GenericTypedPayloadTreeNode($payload, $this->faker->name, null);
+        new GenericTypedPayloadTreeNode(null, $payload, $this->faker->name, null);
     }
 
     public function testExceptionPayloadObjectFQDNCannotBeNullConstructor(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $payload = $this->faker->domainName;
-        new GenericTypedPayloadTreeNode($payload, TypedPayloadTreeNode::PAYLOAD_TYPE_OBJECT_WITH_FQDN, null);
+        new GenericTypedPayloadTreeNode(null, $payload, TypedPayloadTreeNode::PAYLOAD_TYPE_OBJECT_WITH_FQDN, null);
     }
 
     public function testExceptionPayloadObjectFQDNNotFoundConstructor(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $payload = $this->faker->domainName;
-        new GenericTypedPayloadTreeNode($payload, TypedPayloadTreeNode::PAYLOAD_TYPE_OBJECT_WITH_FQDN, $this->faker->domainName);
+        new GenericTypedPayloadTreeNode(null, $payload, TypedPayloadTreeNode::PAYLOAD_TYPE_OBJECT_WITH_FQDN, $this->faker->domainName);
     }
 
     public function testExceptionPayloadInvalidConstructor(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $payload = $this->faker->domainName;
-        new GenericTypedPayloadTreeNode($payload, TypedPayloadTreeNode::PAYLOAD_TYPE_BOOL, null);
+        new GenericTypedPayloadTreeNode(null, $payload, TypedPayloadTreeNode::PAYLOAD_TYPE_BOOL, null);
     }
 
     public function testGetterPayloadType(): void
     {
         $payload = $this->faker->domainName;
-        $typedPayloadTreeNode = new GenericTypedPayloadTreeNode($payload, TypedPayloadTreeNode::PAYLOAD_TYPE_STRING, null);
+        $typedPayloadTreeNode = new GenericTypedPayloadTreeNode(null, $payload, TypedPayloadTreeNode::PAYLOAD_TYPE_STRING, null);
 
         $this->assertTrue($typedPayloadTreeNode->getPayloadType() === TypedPayloadTreeNode::PAYLOAD_TYPE_STRING);
     }
@@ -77,12 +77,12 @@ final class GenericTypedPayloadTreeNodeTest extends TestCase
     public function testGetterPayloadObjectFQDN(): void
     {
         $payload = $this->faker->domainName;
-        $typedPayloadTreeNode = new GenericTypedPayloadTreeNode($payload, TypedPayloadTreeNode::PAYLOAD_TYPE_STRING, null);
+        $typedPayloadTreeNode = new GenericTypedPayloadTreeNode(null, $payload, TypedPayloadTreeNode::PAYLOAD_TYPE_STRING, null);
 
         $this->assertTrue($typedPayloadTreeNode->getPayloadObjectFQDN() === null);
 
         $payload = new stdClass();
-        $typedPayloadTreeNode = new GenericTypedPayloadTreeNode($payload, TypedPayloadTreeNode::PAYLOAD_TYPE_OBJECT_WITH_FQDN, stdClass::class);
+        $typedPayloadTreeNode = new GenericTypedPayloadTreeNode(null, $payload, TypedPayloadTreeNode::PAYLOAD_TYPE_OBJECT_WITH_FQDN, stdClass::class);
 
 
         $this->assertTrue($typedPayloadTreeNode->getPayloadObjectFQDN() === stdClass::class);
@@ -91,17 +91,17 @@ final class GenericTypedPayloadTreeNodeTest extends TestCase
     public function testAddChildWithTypedPayload(): void
     {
         $payloadChild = $this->faker->domainName;
-        $typedPayloadTreeNodeChild = new GenericTypedPayloadTreeNode($payloadChild, TypedPayloadTreeNode::PAYLOAD_TYPE_STRING, null);
+        $typedPayloadTreeNodeChild = new GenericTypedPayloadTreeNode(null, $payloadChild, TypedPayloadTreeNode::PAYLOAD_TYPE_STRING, null);
 
         $payload = $this->faker->domainName;
-        $typedPayloadTreeNode = new GenericTypedPayloadTreeNode($payload, TypedPayloadTreeNode::PAYLOAD_TYPE_STRING, null);
+        $typedPayloadTreeNode = new GenericTypedPayloadTreeNode(null, $payload, TypedPayloadTreeNode::PAYLOAD_TYPE_STRING, null);
 
         $this->assertTrue(count($typedPayloadTreeNode->getChildren()) === 0);
         $typedPayloadTreeNode->addChildWithTypedPayload($typedPayloadTreeNodeChild);
         $this->assertTrue(count($typedPayloadTreeNode->getChildren()) === 1);
 
         $payloadChildSecond = $this->faker->boolean;
-        $typedPayloadTreeNodeChildSecond = new GenericTypedPayloadTreeNode($payloadChildSecond, TypedPayloadTreeNode::PAYLOAD_TYPE_BOOL, null);
+        $typedPayloadTreeNodeChildSecond = new GenericTypedPayloadTreeNode(null, $payloadChildSecond, TypedPayloadTreeNode::PAYLOAD_TYPE_BOOL, null);
 
         $this->expectException(InvalidArgumentException::class);
         $typedPayloadTreeNode->addChildWithTypedPayload($typedPayloadTreeNodeChildSecond);

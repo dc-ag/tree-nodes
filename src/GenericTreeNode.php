@@ -19,13 +19,13 @@ class GenericTreeNode implements TreeNode
      * @param $payload
      * @param IdGenerator|null $idGenerator
      */
-    public function __construct($payload, ?IdGenerator $idGenerator = null)
+    public function __construct(?string $id, $payload, ?IdGenerator $idGenerator = null)
     {
         if ($idGenerator === null) {
             $idGenerator = new GenericIdGenerator();
         }
 
-        $this->id = $idGenerator->getId();
+        $this->id = $id ?? $idGenerator->getId();
         $this->payload = $payload;
         $this->rootId = $this->id;
     }
