@@ -18,7 +18,7 @@ class GenericTypedPayloadTreeNode extends GenericTreeNode implements TypedPayloa
      * @param string|null $payloadObjectFQDN
      * @param IdGenerator|null $idGenerator
      */
-    public function __construct($payload, string $payloadType, ?string $payloadObjectFQDN, ?IdGenerator $idGenerator = null)
+    public function __construct(?string $id, $payload, string $payloadType, ?string $payloadObjectFQDN, ?IdGenerator $idGenerator = null)
     {
         if (!self::isPayloadTypeValid($payloadType)) {
             throw new InvalidArgumentException("Payload type [$payloadType] is not valid");
@@ -40,7 +40,7 @@ class GenericTypedPayloadTreeNode extends GenericTreeNode implements TypedPayloa
             );
         }
 
-        parent::__construct($payload, $idGenerator);
+        parent::__construct($id, $payload, $idGenerator);
         $this->payloadType = $payloadType;
         $this->payloadObjectFQDN = $payloadObjectFQDN;
     }

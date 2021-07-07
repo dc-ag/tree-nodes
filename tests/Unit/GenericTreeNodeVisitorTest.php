@@ -27,36 +27,36 @@ final class GenericTreeNodeVisitorTest extends TestCase
 
     public function testVisitPreOrder(): void
     {
-        $sortableTreeNode = new GenericSortableTreeNode("root");
+        $sortableTreeNode = new GenericSortableTreeNode(null, "root");
 
-        $sortableTreeNodeFirstChild = new GenericSortableTreeNode("1");
+        $sortableTreeNodeFirstChild = new GenericSortableTreeNode(null, "1");
         $sortableTreeNode->addChildWithSorting($sortableTreeNodeFirstChild);
 
-        $sortableTreeNodeSecondChild = new GenericSortableTreeNode("2");
+        $sortableTreeNodeSecondChild = new GenericSortableTreeNode(null, "2");
         $sortableTreeNode->addChildWithSorting($sortableTreeNodeSecondChild);
 
-        $sortableTreeNodeSecondChildFirstChild = new GenericSortableTreeNode("2.1");
+        $sortableTreeNodeSecondChildFirstChild = new GenericSortableTreeNode(null, "2.1");
         $sortableTreeNodeSecondChild->addChildWithSorting($sortableTreeNodeSecondChildFirstChild);
 
-        $sortableTreeNodeSecondChildFirstChildFirstChild = new GenericSortableTreeNode("2.1.1");
+        $sortableTreeNodeSecondChildFirstChildFirstChild = new GenericSortableTreeNode(null, "2.1.1");
         $sortableTreeNodeSecondChildFirstChild->addChildWithSorting($sortableTreeNodeSecondChildFirstChildFirstChild);
 
-        $sortableTreeNodeSecondChildFirstChildSecondChild = new GenericSortableTreeNode("2.1.2");
+        $sortableTreeNodeSecondChildFirstChildSecondChild = new GenericSortableTreeNode(null, "2.1.2");
         $sortableTreeNodeSecondChildFirstChild->addChildWithSorting($sortableTreeNodeSecondChildFirstChildSecondChild);
 
-        $sortableTreeNodeSecondChildSecondChild = new GenericSortableTreeNode("2.2");
+        $sortableTreeNodeSecondChildSecondChild = new GenericSortableTreeNode(null, "2.2");
         $sortableTreeNodeSecondChild->addChildWithSorting($sortableTreeNodeSecondChildSecondChild);
 
-        $sortableTreeNodeThirdChild = new GenericSortableTreeNode("3");
+        $sortableTreeNodeThirdChild = new GenericSortableTreeNode(null, "3");
         $sortableTreeNode->addChildWithSorting($sortableTreeNodeThirdChild);
 
-        $sortableTreeNodeThirdChildFirstChild = new GenericSortableTreeNode("3.1");
+        $sortableTreeNodeThirdChildFirstChild = new GenericSortableTreeNode(null, "3.1");
         $sortableTreeNodeThirdChild->addChildWithSorting($sortableTreeNodeThirdChildFirstChild);
 
-        $sortableTreeNodeFourthChild = new GenericSortableTreeNode("4");
+        $sortableTreeNodeFourthChild = new GenericSortableTreeNode(null, "4");
         $sortableTreeNode->addChildWithSorting($sortableTreeNodeFourthChild);
 
-        $sortableTreeNodeFifthChild = new GenericSortableTreeNode("5");
+        $sortableTreeNodeFifthChild = new GenericSortableTreeNode(null, "5");
         $sortableTreeNode->addChildWithSorting($sortableTreeNodeFifthChild);
 
         $expectedNode = $sortableTreeNode;
@@ -80,36 +80,36 @@ final class GenericTreeNodeVisitorTest extends TestCase
 
     public function testVisitPostOrder(): void
     {
-        $sortableTreeNode = new GenericSortableTreeNode("root");
+        $sortableTreeNode = new GenericSortableTreeNode(null, "root");
 
-        $sortableTreeNodeFirstChild = new GenericSortableTreeNode("1");
+        $sortableTreeNodeFirstChild = new GenericSortableTreeNode(null, "1");
         $sortableTreeNode->addChildWithSorting($sortableTreeNodeFirstChild);
 
-        $sortableTreeNodeSecondChild = new GenericSortableTreeNode("2");
+        $sortableTreeNodeSecondChild = new GenericSortableTreeNode(null, "2");
         $sortableTreeNode->addChildWithSorting($sortableTreeNodeSecondChild);
 
-        $sortableTreeNodeSecondChildFirstChild = new GenericSortableTreeNode("2.1");
+        $sortableTreeNodeSecondChildFirstChild = new GenericSortableTreeNode(null, "2.1");
         $sortableTreeNodeSecondChild->addChildWithSorting($sortableTreeNodeSecondChildFirstChild);
 
-        $sortableTreeNodeSecondChildFirstChildFirstChild = new GenericSortableTreeNode("2.1.1");
+        $sortableTreeNodeSecondChildFirstChildFirstChild = new GenericSortableTreeNode(null, "2.1.1");
         $sortableTreeNodeSecondChildFirstChild->addChildWithSorting($sortableTreeNodeSecondChildFirstChildFirstChild);
 
-        $sortableTreeNodeSecondChildFirstChildSecondChild = new GenericSortableTreeNode("2.1.2");
+        $sortableTreeNodeSecondChildFirstChildSecondChild = new GenericSortableTreeNode(null, "2.1.2");
         $sortableTreeNodeSecondChildFirstChild->addChildWithSorting($sortableTreeNodeSecondChildFirstChildSecondChild);
 
-        $sortableTreeNodeSecondChildSecondChild = new GenericSortableTreeNode("2.2");
+        $sortableTreeNodeSecondChildSecondChild = new GenericSortableTreeNode(null, "2.2");
         $sortableTreeNodeSecondChild->addChildWithSorting($sortableTreeNodeSecondChildSecondChild);
 
-        $sortableTreeNodeThirdChild = new GenericSortableTreeNode("3");
+        $sortableTreeNodeThirdChild = new GenericSortableTreeNode(null, "3");
         $sortableTreeNode->addChildWithSorting($sortableTreeNodeThirdChild);
 
-        $sortableTreeNodeThirdChildFirstChild = new GenericSortableTreeNode("3.1");
+        $sortableTreeNodeThirdChildFirstChild = new GenericSortableTreeNode(null, "3.1");
         $sortableTreeNodeThirdChild->addChildWithSorting($sortableTreeNodeThirdChildFirstChild);
 
-        $sortableTreeNodeFourthChild = new GenericSortableTreeNode("4");
+        $sortableTreeNodeFourthChild = new GenericSortableTreeNode(null, "4");
         $sortableTreeNode->addChildWithSorting($sortableTreeNodeFourthChild);
 
-        $sortableTreeNodeFifthChild = new GenericSortableTreeNode("5");
+        $sortableTreeNodeFifthChild = new GenericSortableTreeNode(null, "5");
         $sortableTreeNode->addChildWithSorting($sortableTreeNodeFifthChild);
 
         $expectedNode = $sortableTreeNodeFirstChild;
