@@ -12,7 +12,7 @@ class GenericTreeNode implements TreeNode
     private $payload;
     private ?TreeNode $parent = null;
     private array $children = [];
-    private ?string $rootId = null;
+    protected ?string $rootId = null;
 
     /**
      * GenericTreeNode constructor.
