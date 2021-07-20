@@ -13,15 +13,61 @@ use TreeNodes\GenericTreeNode;
 final class GenericTreeNodeTest extends TestCase
 {
     private Generator $faker;
+    private SortableTreeNode $demoTree;
+    private TreeNodeVisitor $orderWritingVisitor;
+    private string $orderString = "";
 
     protected function setUp(): void
     {
         $this->faker = Factory::create();
+
+        $treeNode = new GenericTreeNode("root", "root");
+
+        $treeNodeFirstChild = new GenericTreeNode("1", "1");
+        $treeNode->addChild($treeNodeFirstChild);
+
+        $treeNodeSecondChild = new GenericTreeNode("2", "2");
+        $treeNode->addChild($treeNodeSecondChild);
+
+        $treeNodeSecondChildFirstChild = new GenericTreeNode("2.1", "2.1");
+        $treeNodeSecondChild->addChild($treeNodeSecondChildFirstChild);
+
+        $treeNodeSecondChildFirstChildFirstChild = new GenericTreeNode("2.1.1", "2.1.1");
+        $treeNodeSecondChildFirstChild->addChild($treeNodeSecondChildFirstChildFirstChild);
+
+        $treeNodeSecondChildFirstChildSecondChild = new GenericTreeNode("2.1.2", "2.1.2");
+        $treeNodeSecondChildFirstChild->addChild($treeNodeSecondChildFirstChildSecondChild);
+
+        $treeNodeSecondChildSecondChild = new GenericTreeNode("2.2", "2.2");
+        $treeNodeSecondChild->addChild($treeNodeSecondChildSecondChild);
+
+        $treeNodeThirdChild = new GenericTreeNode("3", "3");
+        $treeNode->addChild($treeNodeThirdChild);
+
+        $treeNodeThirdChildFirstChild = new GenericTreeNode("3.1", "3.1");
+        $treeNodeThirdChild->addChild($treeNodeThirdChildFirstChild);
+
+        $treeNodeFourthChild = new GenericTreeNode("4", "4");
+        $treeNode->addChild($treeNodeFourthChild);
+
+        $treeNodeFifthChild = new GenericTreeNode("5", "5");
+        $treeNode->addChild($treeNodeFifthChild);
+
+        $this->demoTree = $treeNode;
+
+        $visitFn = function(SortableTreeNode $treeNode) {
+            $separator = '' === $this->orderString ? '' : ', ';
+            $this->orderString .= $separator . $treeNode->getId();
+        };
+        $this->orderWritingVisitor = new GenericTreeNodeVisitor($visitFn);
     }
 
     protected function tearDown(): void
     {
         unset($this->faker);
+        unset($this->demoTree);
+        unset($this->orderString);
+        unset($this->orderWritingVisitor);
     }
 
     public function testGetterId(): void

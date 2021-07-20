@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace TreeNodes;
 
+use ArrayIterator;
+use Closure;
+use ErrorException;
 use InvalidArgumentException;
+use RangeException;
 
 class GenericTreeNode implements TreeNode
 {
@@ -13,6 +17,7 @@ class GenericTreeNode implements TreeNode
     private ?TreeNode $parent = null;
     private array $children = [];
     protected ?string $rootId = null;
+
 
     /**
      * GenericTreeNode constructor.
@@ -208,4 +213,115 @@ class GenericTreeNode implements TreeNode
     {
         return $this->rootId;
     }
+
+    public function findNode(callable $identifierPredicate, int $searchOrder): ?TreeNode
+    {
+        $foundNode = null;
+
+        $visitorFn = static function(TreeNode $node) use (&$foundNode, $identifierPredicate) {
+            if ($identifierPredicate($node)) {
+                $foundNode = $node;
+                //Abort early with specific exception once found
+                throw new RangeException();
+            }
+        };
+        
+        try {
+        switch ($searchOrder) {
+            case TreeNode::SEARCH_PRE_ORDER:
+                $this->nonSortablePreOrderVisitingFunction($this, $visitorFn);
+                break;
+            case TreeNode::SEARCH_POST_ORDER:
+                $this->nonSortablePostOrderVisitingFunction($this, $visitorFn);
+                break;
+            case TreeNode::SEARCH_LEVEL_ORDER:
+                $this->nonSortableLevelOrderVisitingFunction($this, $visitorFn);
+                break;
+            default:
+                throw new InvalidArgumentException('Unknown search-order code [' . $searchOrder . ']. Please referr to constants in TreeNode-class.');
+
+        }
+        } catch (RangeException $t) {
+            //All good
+        }
+        return $foundNode;
+    }
+
+    protected function nonSortablePreOrderVisitingFunction(?TreeNode $treeNode, callable $visitorFn): void
+    {
+        if (null === $treeNode) {
+            return;
+        }
+
+        $visitorFn($treeNode);
+        $childIterator = new ArrayIterator($treeNode->getChildren());
+        if ($treeNode->getNoOfChildren() > 0) {
+            $currChild = $childIterator->current();
+            while (null !== $currChild) {
+                $this->nonSortablePreOrderVisitingFunction($currChild, $visitorFn);
+                $childIterator->next();
+            }
+        }       
+
+    }
+
+    protected function nonSortablePostOrderVisitingFunction(?TreeNode $treeNode, callable $visitorFn): void
+    {
+        if (null === $treeNode) {
+            return;
+        }
+        $childIterator = new ArrayIterator($treeNode->getChildren());
+        if ($treeNode->getNoOfChildren() > 0) { 
+            $currChild = $childIterator->current();
+            while (null !== $currChild) {
+                $this->nonSortablePreOrderVisitingFunction($currChild, $visitorFn);
+                $visitorFn($treeNode);
+                $childIterator->next();
+            }
+        }       
+
+    }
+
+    
+    protected function nonSortableLevelOrderVisitingFunction(?TreeNode $treeNode, callable $visitorFn): void
+    {
+        if (null === $treeNode) {
+            return;
+        }
+        $visitorFn($treeNode);
+
+        $nextLevelNodes = [];
+        $currlevelNodes = $treeNode->getChildren();
+
+        $collectNextLevelNodes = static fn(SortableTreeNode $treeNode) => $nextLevelNodes += $treeNode->getChildren();
+
+        do {
+            while (!empty($currlevelNodes)) {
+                $currNode = \array_shift($levelNodes);
+                $collectNextLevelNodes($currNode);
+                $visitorFn($currNode);
+            }
+            $currlevelNodes = $nextLevelNodes;
+            $nextLevelNodes = [];
+        } while (!empty($currlevelNodes));    
+
+    }
+
+    public function replaceChildNode(TreeNode $childToReplace, TreeNode $replacementChildNode): void
+    {
+        $childCount = $this->getNoOfChildren();
+    
+        for ($i = 0; $i < $childCount; $i++) {
+            $currChild = $this->children[$i];
+            if ($currChild->getId() === $childToReplace->getId()) {
+                $currParentOfReplacement = $replacementChildNode->getParent();
+                if (null === $currParentOfReplacement || $currParentOfReplacement->getId() !== $this->getId()) {
+                    $replacementChildNode->setParent($this);
+                }
+                $this->children[$i] = $replacementChildNode;
+                break;
+            }
+        }
+    }
+
 }

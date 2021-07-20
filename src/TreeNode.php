@@ -4,12 +4,19 @@ declare(strict_types=1);
 
 namespace TreeNodes;
 
+use Closure;
+
 /**
  * Interface TreeNode
  * @package TreeNodes
  */
 interface TreeNode
 {
+
+    public const SEARCH_PRE_ORDER = 0;
+    public const SEARCH_POST_ORDER = 1;
+    public const SEARCH_LEVEL_ORDER = 2;
+
     /**
      * @return string
      */
@@ -51,6 +58,12 @@ interface TreeNode
     public function removeChild(TreeNode $childToRemove): void;
 
     /**
+     * @param TreeNode $childToReplace
+     * @param TreeNode $replacementChildNode
+     */
+    public function replaceChildNode(TreeNode $childToReplace, TreeNode $replacementChildNode): void;
+
+    /**
      * @return int
      */
     public function getNoOfChildren(): int;
@@ -85,4 +98,16 @@ interface TreeNode
      * @return null|string 
      */
     public function getRootId(): ?string;
+
+    /**
+     * @param Closure $identifierPredicate - A callable encapsulating a function from TreeNode to bool. 
+     *                                       The TreeNode returned by findNode will be first instance 
+     *                                       where the closure returns true or null if it does not 
+     *                                       return true on any node in the tree.
+     * @param integer $searchOrder         - Directive to search pre-order (0), in-order (1), 
+     *                                       in-order (2) or level-order (3)
+     * @return TreeNode|null
+     */
+    public function findNode(callable $identifierPredicate, int $searchOrder): ?TreeNode;
+
 }

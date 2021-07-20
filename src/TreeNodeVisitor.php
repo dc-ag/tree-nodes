@@ -21,4 +21,14 @@ interface TreeNodeVisitor
      * @return void 
      */
     public function visitPostOrder(?SortableTreeNode $node, bool $atRoot = true): void;
+
+    /**
+     * 
+     * @param null|SortableTreeNode $node 
+     * @param bool $atRoot 
+     * @return void 
+     */
+    public function visitLevelOrder(?SortableTreeNode $node, bool $atRoot = true): void;
+
+    
 }
