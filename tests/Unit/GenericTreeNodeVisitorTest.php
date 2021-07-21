@@ -12,6 +12,13 @@ use TreeNodes\TreeNodeVisitor;
 use TreeNodes\GenericTreeNodeVisitor;
 use TreeNodes\SortableTreeNode;
 
+
+/**
+ * @covers TreeNodes\GenericTreeNodeVisitor
+ * @uses TreeNodes\GenericTreeNode
+ * @uses TreeNodes\GenericSortableTreeNode
+ * @uses TreeNodes\canActAsSortableTreeNode
+ */
 final class GenericTreeNodeVisitorTest extends TestCase
 {
     private Generator $faker;

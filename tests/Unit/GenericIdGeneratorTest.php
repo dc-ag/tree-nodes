@@ -7,6 +7,9 @@ namespace TreeNodes\Tests\Unit;
 use PHPUnit\Framework\TestCase;
 use TreeNodes\GenericIdGenerator;
 
+/**
+ * @covers TreeNodes\GenericIdGenerator
+ */
 final class GenericIdGeneratorTest extends TestCase
 {
     public function testGetterId(): void

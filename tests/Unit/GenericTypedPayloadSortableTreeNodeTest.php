@@ -11,6 +11,12 @@ use PHPUnit\Framework\TestCase;
 use TreeNodes\GenericSortableTreeNode;
 use TreeNodes\GenericTypedPayloadSortableTreeNode;
 
+/**
+ * @covers TreeNodes\GenericTypedPayloadSortableTreeNode
+ * @uses TreeNodes\GenericIdGenerator
+ * @uses TreeNodes\GenericTreeNode
+ * @uses TreeNodes\GenericTypedPayloadTreeNode
+ */
 final class GenericTypedPayloadSortableTreeNodeTest extends TestCase
 {
     private Generator $faker;

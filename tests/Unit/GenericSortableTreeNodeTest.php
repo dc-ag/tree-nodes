@@ -9,6 +9,11 @@ use Faker\Generator;
 use PHPUnit\Framework\TestCase;
 use TreeNodes\GenericSortableTreeNode;
 
+/**
+ * @covers TreeNodes\GenericSortableTreeNode
+ * @uses TreeNodes\GenericIdGenerator
+ * @uses TreeNodes\GenericTreeNode
+ */
 final class GenericSortableTreeNodeTest extends TestCase
 {
     private Generator $faker;

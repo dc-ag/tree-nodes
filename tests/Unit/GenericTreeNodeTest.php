@@ -12,6 +12,10 @@ use TreeNodes\GenericTreeNode;
 use InvalidArgumentException;
 use Closure;
 
+/**
+ * @covers TreeNodes\GenericTreeNode
+ * @uses TreeNodes\GenericIdGenerator
+ */
 final class GenericTreeNodeTest extends TestCase
 {
     private Generator $faker;
@@ -53,7 +57,9 @@ final class GenericTreeNodeTest extends TestCase
         $treeNodeFourthChild = new GenericTreeNode("4", "4");
         $treeNode->addChild($treeNodeFourthChild);
 
-        $treeNodeFifthChild = new GenericTreeNode("5", "5");
+        $payload = new \stdClass();
+        $payload->property = 'value';
+        $treeNodeFifthChild = new GenericTreeNode("5", $payload);
         $treeNode->addChild($treeNodeFifthChild);
 
         $this->demoTree = $treeNode;
@@ -360,6 +366,18 @@ final class GenericTreeNodeTest extends TestCase
         $this->assertEquals($expectedOrderStringBeforeFind, $this->orderString, $errMsgOrder);
     }
 
+    public function testFindPreOrderNegative(): void
+    {
+        $expectedOrderStringBeforeFind = 'root, 1, 2, 2.1, 2.1.1, 2.1.2, 2.2, 3, 3.1, 4, 5';
+        $this->orderString = '';
+        $root = $this->demoTree;
+        $this->idToFind = 'X';
+        $foundNode = $root->findNode($this->orderWritingFindPredicate, TreeNode::SEARCH_PRE_ORDER);
+        $this->idToFind = '3.1';
+        $errMsgFound = "findNode-test did find something when tasked to search a non-present id.";
+        $this->assertNull($foundNode, $errMsgFound);
+    }
+
     public function testFindPostOrder(): void
     {
         $expectedOrderStringBeforeFind = '1, 2.1.1, 2.1.2, 2.1, 2.2, 2, 3.1';
@@ -372,16 +390,49 @@ final class GenericTreeNodeTest extends TestCase
         $this->assertEquals($expectedOrderStringBeforeFind, $this->orderString, $errMsgOrder);
     }
 
-    public function testFindLevelOrder(): void
+    public function testFindPostOrderNegative(): void
     {
-        $expectedOrderStringBeforeFind = 'root, 1, 2, 3, 4, 5, 2.1, 2.2, 3.1';
+        $expectedOrderStringBeforeFind = '1, 2.1.1, 2.1.2, 2.1, 2.2, 2, 3.1, 3, 4, 5, root';
         $this->orderString = '';
         $root = $this->demoTree;
+        $this->idToFind = 'X';
+        $foundNode = $root->findNode($this->orderWritingFindPredicate, TreeNode::SEARCH_POST_ORDER);
+        $this->idToFind = '3.1';
+        $errMsgFound = "findNode-test did find something when tasked to search a non-present id.";
+        $this->assertNull($foundNode, $errMsgFound);
+    }
+
+    public function testFindLevelOrder(): void
+    {
+        $expectedOrderStringBeforeFind = 'root, 1, 2, 3, 4, 5, 2.1, 2.2, 3.1, 2.1.1';
+        $this->orderString = '';
+        $root = $this->demoTree;
+        $this->idToFind = '2.1.1';
         $foundNode = $root->findNode($this->orderWritingFindPredicate, TreeNode::SEARCH_LEVEL_ORDER);
         $errMsgOrder = "findNode with level-order does not traverse in expected order [$expectedOrderStringBeforeFind] - actual order [{$this->orderString}].";
         $errMsgNotFound = "findNode-test did not find a node present in the tree.";
-        $this->assertTrue($foundNode instanceof TreeNode && $foundNode->getId() === '3.1', $errMsgNotFound);
+        $this->assertTrue($foundNode instanceof TreeNode && $foundNode->getId() === '2.1.1', $errMsgNotFound);
         $this->assertEquals($expectedOrderStringBeforeFind, $this->orderString, $errMsgOrder);
+    }
+
+    
+    public function testFindLeveltOrderNegative(): void
+    {
+        $expectedOrderStringBeforeFind = 'root, 1, 2, 3, 4, 5, 2.1, 2.2, 3.1, 2.1.1, 2.1.2';
+        $this->orderString = '';
+        $root = $this->demoTree;
+        $this->idToFind = 'X';
+        $foundNode = $root->findNode($this->orderWritingFindPredicate, TreeNode::SEARCH_LEVEL_ORDER);
+        $this->idToFind = '3.1';
+        $errMsgFound = "findNode-test did find something when tasked to search a non-present id.";
+        $this->assertNull($foundNode, $errMsgFound);
+    }
+
+    public function testFindThrowsErrorOnInvalidSearchOption(): void
+    {
+        $root = $this->demoTree;
+        $this->expectException(InvalidArgumentException::class);
+        $root->findNode($this->orderWritingFindPredicate, 8);
     }
 
     public function testGetDeepCopy(): void

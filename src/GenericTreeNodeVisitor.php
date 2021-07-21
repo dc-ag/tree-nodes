@@ -32,9 +32,6 @@ class GenericTreeNodeVisitor implements TreeNodeVisitor
         $leftmostChild = null;
         if ($node->getNoOfChildrenWithSorting() > 0) {
             $leftmostChild = reset($node->getChildrenWithSorting());
-            while ($leftmostChild->getLeftSibling() !== null) {
-                $leftmostChild = $leftmostChild->getLeftSibling();
-            }
         }
         ($this->visitorCallable)($node);
         $this->visitPreOrder($leftmostChild, false);
@@ -57,9 +54,6 @@ class GenericTreeNodeVisitor implements TreeNodeVisitor
         $leftmostChild = null;
         if ($node->getNoOfChildrenWithSorting() > 0) {
             $leftmostChild = reset($node->getChildrenWithSorting());
-            while ($leftmostChild->getLeftSibling() !== null) {
-                $leftmostChild = $leftmostChild->getLeftSibling();
-            }
         }
 
         $this->visitPostOrder($leftmostChild, false);

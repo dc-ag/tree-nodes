@@ -248,12 +248,8 @@ class GenericTreeNode implements TreeNode
         return $foundNode;
     }
 
-    protected function nonSortablePreOrderVisitingFunction(?TreeNode $treeNode, callable $visitorFn): void
+    protected function nonSortablePreOrderVisitingFunction(TreeNode $treeNode, callable $visitorFn): void
     {
-        if (null === $treeNode) {
-            return;
-        }
-
         $visitorFn($treeNode);
         $childIterator = new ArrayIterator($treeNode->getChildren());
         if ($treeNode->getNoOfChildren() > 0) {
@@ -266,11 +262,8 @@ class GenericTreeNode implements TreeNode
 
     }
 
-    protected function nonSortablePostOrderVisitingFunction(?TreeNode $treeNode, callable $visitorFn): void
+    protected function nonSortablePostOrderVisitingFunction(TreeNode $treeNode, callable $visitorFn): void
     {
-        if (null === $treeNode) {
-            return;
-        }
         $childIterator = new ArrayIterator($treeNode->getChildren());
         if ($treeNode->getNoOfChildren() > 0) { 
             while ($childIterator->valid()) {
@@ -283,11 +276,8 @@ class GenericTreeNode implements TreeNode
 
     }
 
-    protected function nonSortableLevelOrderVisitingFunction(?TreeNode $treeNode, callable $visitorFn): void
+    protected function nonSortableLevelOrderVisitingFunction(TreeNode $treeNode, callable $visitorFn): void
     {
-        if (null === $treeNode) {
-            return;
-        }
         $visitorFn($treeNode);
 
         $nextLevelNodes = [];
@@ -305,7 +295,9 @@ class GenericTreeNode implements TreeNode
            }
            $currlevelNodes = $nextLevelNodes;
            $nextLevelNodes = [];
-       } while (!empty($currlevelNodes));
+       } while (
+           !empty($currlevelNodes)
+       );
 
     }
 
@@ -318,10 +310,9 @@ class GenericTreeNode implements TreeNode
 
     public function setChildren(TreeNode ...$nodes): void
     {
-        $thisId = $this->getId();
         foreach ($nodes as $node) {
             $nodeParent = $node->getParent();
-            if (null === $nodeParent || $nodeParent->getId() !== $thisId) {
+            if (null === $nodeParent || $nodeParent !== $this) {
                 $node->setParent($this);
             }
         }

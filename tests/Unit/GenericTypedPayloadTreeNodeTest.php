@@ -12,6 +12,11 @@ use TreeNodes\TypedPayloadTreeNode;
 use InvalidArgumentException;
 use stdClass;
 
+/**
+ * @covers TreeNodes\GenericTypedPayloadTreeNode
+ * @uses TreeNodes\GenericIdGenerator
+ * @uses TreeNodes\GenericTreeNode
+ */
 final class GenericTypedPayloadTreeNodeTest extends TestCase
 {
     private Generator $faker;
