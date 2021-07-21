@@ -38,7 +38,7 @@ class GenericTreeNodeVisitor implements TreeNodeVisitor
         }
         ($this->visitorCallable)($node);
         $this->visitPreOrder($leftmostChild, false);
-        if ($atRoot === false) {
+        if (!$atRoot) {
             $this->visitPreOrder($node->getRightSibling(), false);
         }
     }
@@ -64,8 +64,39 @@ class GenericTreeNodeVisitor implements TreeNodeVisitor
 
         $this->visitPostOrder($leftmostChild, false);
         ($this->visitorCallable)($node);
-        if ($atRoot === false) {
+        if (!$atRoot) {
             $this->visitPostOrder($node->getRightSibling(), false);
         }
+    }
+
+            /**
+     * 
+     * @param null|SortableTreeNode $node 
+     * @param bool $atRoot 
+     * @return void 
+     */
+    public function visitLevelOrder(?SortableTreeNode $node, bool $atRoot = true): void
+    {
+        if (null === $node) {
+            return;
+        }
+        ($this->visitorCallable)($node);
+
+        $nextLevelNodes = [];
+        $currlevelNodes = $node->getChildren();
+
+        $collectNextLevelNodes = static function(SortableTreeNode $treeNode) use (&$nextLevelNodes) { 
+             $nextLevelNodes = [...$nextLevelNodes, ...$treeNode->getChildren()];
+        };
+
+        do {
+            while (!empty($currlevelNodes)) {
+                $currNode = \array_shift($currlevelNodes);
+                $collectNextLevelNodes($currNode);
+                ($this->visitorCallable)($currNode);
+            }
+            $currlevelNodes = $nextLevelNodes;
+            $nextLevelNodes = [];
+        } while (!empty($currlevelNodes));
     }
 }
