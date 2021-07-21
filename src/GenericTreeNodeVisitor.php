@@ -64,7 +64,7 @@ class GenericTreeNodeVisitor implements TreeNodeVisitor
 
         $this->visitPostOrder($leftmostChild, false);
         ($this->visitorCallable)($node);
-        if ($atRoot === false) {
+        if (!$atRoot) {
             $this->visitPostOrder($node->getRightSibling(), false);
         }
     }
