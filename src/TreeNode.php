@@ -58,10 +58,9 @@ interface TreeNode
     public function removeChild(TreeNode $childToRemove): void;
 
     /**
-     * @param TreeNode $childToReplace
-     * @param TreeNode $replacementChildNode
+     * @param string $id
      */
-    public function replaceChildNode(TreeNode $childToReplace, TreeNode $replacementChildNode): void;
+    public function removeChildById(string $id): void;
 
     /**
      * @return int
@@ -104,10 +103,26 @@ interface TreeNode
      *                                       The TreeNode returned by findNode will be first instance 
      *                                       where the closure returns true or null if it does not 
      *                                       return true on any node in the tree.
-     * @param integer $searchOrder         - Directive to search pre-order (0), in-order (1), 
-     *                                       in-order (2) or level-order (3)
+     * @param integer $searchOrder         - Directive to search by depth first in pre-order (0) or post-order (1) -
+     *                                       or breadth-first top-to-bottom, i.e. level-order (3)
      * @return TreeNode|null
      */
     public function findNode(callable $identifierPredicate, int $searchOrder): ?TreeNode;
+
+    /**
+     * @param TreeNode $descendantToReplace
+     * @param TreeNode $replacementSubtree
+     */
+    public function replaceDescendant(TreeNode $descendantToReplace, TreeNode $replacementSubtree): void;
+
+        /**
+     * @param string $childToReplace
+     * @param TreeNode $replacementChildNode
+     */
+    public function replaceDescendantById(string $descendantId, TreeNode $replacementSubtree): void;
+
+    public function setChildren(TreeNode ...$nodes): void;
+
+    public function getDeepCopy(): TreeNode;
 
 }

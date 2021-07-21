@@ -8,6 +8,7 @@ use ArrayIterator;
 use Closure;
 use ErrorException;
 use InvalidArgumentException;
+use JsonSerializable;
 use RangeException;
 
 class GenericTreeNode implements TreeNode
@@ -238,7 +239,7 @@ class GenericTreeNode implements TreeNode
                 $this->nonSortableLevelOrderVisitingFunction($this, $visitorFn);
                 break;
             default:
-                throw new InvalidArgumentException('Unknown search-order code [' . $searchOrder . ']. Please referr to constants in TreeNode-class.');
+                throw new InvalidArgumentException('Unknown search-order code [' . $searchOrder . ']. Please referr to constants in TreeNode-interface.');
 
         }
         } catch (RangeException $t) {
@@ -256,8 +257,8 @@ class GenericTreeNode implements TreeNode
         $visitorFn($treeNode);
         $childIterator = new ArrayIterator($treeNode->getChildren());
         if ($treeNode->getNoOfChildren() > 0) {
-            $currChild = $childIterator->current();
-            while (null !== $currChild) {
+            while ($childIterator->valid()) {
+                $currChild = $childIterator->current();
                 $this->nonSortablePreOrderVisitingFunction($currChild, $visitorFn);
                 $childIterator->next();
             }
@@ -272,17 +273,16 @@ class GenericTreeNode implements TreeNode
         }
         $childIterator = new ArrayIterator($treeNode->getChildren());
         if ($treeNode->getNoOfChildren() > 0) { 
-            $currChild = $childIterator->current();
-            while (null !== $currChild) {
-                $this->nonSortablePreOrderVisitingFunction($currChild, $visitorFn);
-                $visitorFn($treeNode);
+            while ($childIterator->valid()) {
+                $currChild = $childIterator->current();
+                $this->nonSortablePostOrderVisitingFunction($currChild, $visitorFn);
+                $visitorFn($currChild);
                 $childIterator->next();
             }
-        }       
+        }
 
     }
 
-    
     protected function nonSortableLevelOrderVisitingFunction(?TreeNode $treeNode, callable $visitorFn): void
     {
         if (null === $treeNode) {
@@ -293,35 +293,111 @@ class GenericTreeNode implements TreeNode
         $nextLevelNodes = [];
         $currlevelNodes = $treeNode->getChildren();
 
-        $collectNextLevelNodes = static fn(SortableTreeNode $treeNode) => $nextLevelNodes += $treeNode->getChildren();
+        $collectNextLevelNodes = static function(TreeNode $treeNode) use (&$nextLevelNodes) { 
+            $nextLevelNodes = [...$nextLevelNodes, ...$treeNode->getChildren()];
+       };
 
-        do {
-            while (!empty($currlevelNodes)) {
-                $currNode = \array_shift($levelNodes);
-                $collectNextLevelNodes($currNode);
-                $visitorFn($currNode);
-            }
-            $currlevelNodes = $nextLevelNodes;
-            $nextLevelNodes = [];
-        } while (!empty($currlevelNodes));    
+       do {
+           while (!empty($currlevelNodes)) {
+               $currNode = \array_shift($currlevelNodes);
+               $collectNextLevelNodes($currNode);
+               $visitorFn($currNode);
+           }
+           $currlevelNodes = $nextLevelNodes;
+           $nextLevelNodes = [];
+       } while (!empty($currlevelNodes));
 
     }
 
-    public function replaceChildNode(TreeNode $childToReplace, TreeNode $replacementChildNode): void
+    public function replaceDescendant(TreeNode $descendantToReplace, TreeNode $replacementSubtree): void
     {
-        $childCount = $this->getNoOfChildren();
-    
-        for ($i = 0; $i < $childCount; $i++) {
-            $currChild = $this->children[$i];
-            if ($currChild->getId() === $childToReplace->getId()) {
-                $currParentOfReplacement = $replacementChildNode->getParent();
-                if (null === $currParentOfReplacement || $currParentOfReplacement->getId() !== $this->getId()) {
-                    $replacementChildNode->setParent($this);
-                }
-                $this->children[$i] = $replacementChildNode;
-                break;
+        $descendantId = $descendantToReplace->getId();
+        $this->replaceDescendantById($descendantId, $replacementSubtree);
+
+    }
+
+    public function setChildren(TreeNode ...$nodes): void
+    {
+        $thisId = $this->getId();
+        foreach ($nodes as $node) {
+            $nodeParent = $node->getParent();
+            if (null === $nodeParent || $nodeParent->getId() !== $thisId) {
+                $node->setParent($this);
             }
         }
+        $this->children = $nodes;        
+    }
+
+    public function removeChildById(string $id): void
+    {
+        $count = $this->getNoOfChildren();
+        $newChildArr = [];
+        for ($i = 0; $i < $count; $i++) {
+            $child = $this->children[$i];
+            if ($child->getId() !== $id) {
+                $newChildArr[] = $child;
+            } else {
+                $child->setParent(null);
+            }
+        }
+        $this->children = $newChildArr;
+        
+    }
+
+    public function replaceDescendantById(string $descendantId, TreeNode $replacementSubtree): void
+    {
+        $findPredicate = static fn(?TreeNode $n) => null !== $n && $n->getId() === $descendantId;
+        $foundNodeToReplace = $this->findNode($findPredicate, TreeNode::SEARCH_PRE_ORDER);
+
+        if (null !== $foundNodeToReplace) {
+            $foundNodeParent = $foundNodeToReplace->getParent();
+            $childCount = $foundNodeParent->getNoOfChildren();
+            $siblingsandSelf = $foundNodeParent->getChildren();
+            for ($i = 0; $i < $childCount; $i++) {
+                $currChild = $siblingsandSelf[$i];
+                if ($currChild->getId() === $descendantId) {
+                    $currChild->setParent(null);
+                    $siblingsandSelf[$i] = $replacementSubtree;
+                }
+                $foundNodeParent->setChildren(...$siblingsandSelf);
+            }
+        }
+    }
+
+    protected function clonePayload(TreeNode $node)
+    {
+        $payload = $node->getPayload();
+        if (\is_object($payload)) {
+            $clonedPayload = clone $payload;
+        } else {
+            $clonedPayload = $payload;
+        }
+        return $clonedPayload;
+    }
+
+    public function getDeepCopy(): TreeNode
+    {
+        
+        $clonedParent = new static($this->getId(), $this->clonePayload($this));
+        $clonedParent->setChildren(...$this->getChildren());
+
+        $nextLevelParents = [];
+        $currParents = [$clonedParent];
+        $iterator = new ArrayIterator($currParents);
+        while ($iterator->valid()) {
+            $currParent = $iterator->current();
+            $currChildren = $currParent->getChildren();
+            $currParent->setChildren();
+            foreach ($currChildren as $currChild) {
+                $newCurrChild = new static($currChild->getId(), $this->clonePayload($currChild));
+                $newCurrChild->setChildren(...$currChild->getChildren());
+                $newCurrChild->setParent($currParent);
+                $clonedParent->addChild($newCurrChild);
+                $nextLevelParents[] = $newCurrChild;
+            }
+            $iterator->next();
+        }
+        return $clonedParent;
     }
 
 }

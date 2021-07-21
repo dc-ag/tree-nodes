@@ -85,7 +85,7 @@ class GenericTreeNodeVisitor implements TreeNodeVisitor
         $nextLevelNodes = [];
         $currlevelNodes = $node->getChildren();
 
-        $collectNextLevelNodes = function(SortableTreeNode $treeNode) use (&$nextLevelNodes) { 
+        $collectNextLevelNodes = static function(SortableTreeNode $treeNode) use (&$nextLevelNodes) { 
              $nextLevelNodes = [...$nextLevelNodes, ...$treeNode->getChildren()];
         };
 
@@ -95,8 +95,6 @@ class GenericTreeNodeVisitor implements TreeNodeVisitor
                 $collectNextLevelNodes($currNode);
                 ($this->visitorCallable)($currNode);
             }
-            
-            echo "NEXT LEVEL NODES: " . print_r(array_map(fn($n) => $n->getId() . ' ', $nextLevelNodes)) . PHP_EOL;
             $currlevelNodes = $nextLevelNodes;
             $nextLevelNodes = [];
         } while (!empty($currlevelNodes));
