@@ -228,20 +228,20 @@ class GenericTreeNode implements TreeNode
         };
         
         try {
-        switch ($searchOrder) {
-            case TreeNode::SEARCH_PRE_ORDER:
-                $this->nonSortablePreOrderVisitingFunction($this, $visitorFn);
-                break;
-            case TreeNode::SEARCH_POST_ORDER:
-                $this->nonSortablePostOrderVisitingFunction($this, $visitorFn);
-                break;
-            case TreeNode::SEARCH_LEVEL_ORDER:
-                $this->nonSortableLevelOrderVisitingFunction($this, $visitorFn);
-                break;
-            default:
-                throw new InvalidArgumentException('Unknown search-order code [' . $searchOrder . ']. Please referr to constants in TreeNode-interface.');
+            switch ($searchOrder) {
+                case TreeNode::SEARCH_PRE_ORDER:
+                    $this->nonSortablePreOrderVisitingFunction($this, $visitorFn);
+                    break;
+                case TreeNode::SEARCH_POST_ORDER:
+                    $this->nonSortablePostOrderVisitingFunction($this, $visitorFn);
+                    break;
+                case TreeNode::SEARCH_LEVEL_ORDER:
+                    $this->nonSortableLevelOrderVisitingFunction($this, $visitorFn);
+                    break;
+                default:
+                    throw new InvalidArgumentException('Unknown search-order code [' . $searchOrder . ']. Please referr to constants in TreeNode-interface.');
 
-        }
+            }
         } catch (RangeException $t) {
             //All good
         }
@@ -357,6 +357,7 @@ class GenericTreeNode implements TreeNode
                 $currChild = $siblingsandSelf[$i];
                 if ($currChild->getId() === $descendantId) {
                     $currChild->setParent(null);
+                    $replacementSubtree->setParent($foundNodeParent);
                     $siblingsandSelf[$i] = $replacementSubtree;
                 }
                 $foundNodeParent->setChildren(...$siblingsandSelf);

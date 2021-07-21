@@ -123,6 +123,11 @@ interface TreeNode
 
     public function setChildren(TreeNode ...$nodes): void;
 
+    /**
+     * Requires payloads to be clone-able
+     *
+     * @return TreeNode
+     */
     public function getDeepCopy(): TreeNode;
 
 }

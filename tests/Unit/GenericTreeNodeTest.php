@@ -356,8 +356,8 @@ final class GenericTreeNodeTest extends TestCase
         $foundNode = $root->findNode($this->orderWritingFindPredicate, TreeNode::SEARCH_PRE_ORDER);
         $errMsgOrder = "findNode with preorder does not traverse in expected order [$expectedOrderStringBeforeFind] - actual order [{$this->orderString}].";
         $errMsgNotFound = "findNode-test did not find a node present in the tree.";
-        $this->assertTrue($foundNode instanceof TreeNode && $foundNode->getId() === '3.1', $errMsgOrder);
-        $this->assertEquals($expectedOrderStringBeforeFind, $this->orderString, $errMsgNotFound);
+        $this->assertTrue($foundNode instanceof TreeNode && $foundNode->getId() === '3.1', $errMsgNotFound);
+        $this->assertEquals($expectedOrderStringBeforeFind, $this->orderString, $errMsgOrder);
     }
 
     public function testFindPostOrder(): void
@@ -368,8 +368,8 @@ final class GenericTreeNodeTest extends TestCase
         $foundNode = $root->findNode($this->orderWritingFindPredicate, TreeNode::SEARCH_POST_ORDER);
         $errMsgOrder = "findNode with postorder does not traverse in expected order [$expectedOrderStringBeforeFind] - actual order [{$this->orderString}].";
         $errMsgNotFound = "findNode-test did not find a node present in the tree.";
-        $this->assertTrue($foundNode instanceof TreeNode && $foundNode->getId() === '3.1', $errMsgOrder);
-        $this->assertEquals($expectedOrderStringBeforeFind, $this->orderString, $errMsgNotFound);
+        $this->assertTrue($foundNode instanceof TreeNode && $foundNode->getId() === '3.1', $errMsgNotFound);
+        $this->assertEquals($expectedOrderStringBeforeFind, $this->orderString, $errMsgOrder);
     }
 
     public function testFindLevelOrder(): void
@@ -380,8 +380,8 @@ final class GenericTreeNodeTest extends TestCase
         $foundNode = $root->findNode($this->orderWritingFindPredicate, TreeNode::SEARCH_LEVEL_ORDER);
         $errMsgOrder = "findNode with level-order does not traverse in expected order [$expectedOrderStringBeforeFind] - actual order [{$this->orderString}].";
         $errMsgNotFound = "findNode-test did not find a node present in the tree.";
-        $this->assertTrue($foundNode instanceof TreeNode && $foundNode->getId() === '3.1', $errMsgOrder);
-        $this->assertEquals($expectedOrderStringBeforeFind, $this->orderString, $errMsgNotFound);
+        $this->assertTrue($foundNode instanceof TreeNode && $foundNode->getId() === '3.1', $errMsgNotFound);
+        $this->assertEquals($expectedOrderStringBeforeFind, $this->orderString, $errMsgOrder);
     }
 
     public function testGetDeepCopy(): void
@@ -436,12 +436,12 @@ final class GenericTreeNodeTest extends TestCase
         $newSubtreeRoot->addChild($newSubtreeSecondChild);
         $newSubtreeRoot->addChild($newSubtreeThirdChild);
 
-        $expectedOrderStringPreOrder =  'root, 1, 2, 2.1, 2.1.1, 2.1.2, A, B, C, C.1, C.2, D';
+        $expectedOrderStringPreOrder =  'root, 1, 2, 2.1, 2.1.1, 2.1.2, A, B, C, C.1, C.2, D, 3, 3.1, 4, 5';
         $this->orderString = '';
         $tree = $this->demoTree->getDeepCopy();
         $toReplaceNode = $tree->findNode(static fn(?TreeNode $n) => null !== $n && $n->getId() === '2.2', TreeNode::SEARCH_PRE_ORDER);
         $tree->replaceDescendant($toReplaceNode, $newSubtreeRoot);
-        $this->idToFind = 'D';
+        $this->idToFind = '5';
         $tree->findNode($this->orderWritingFindPredicate, TreeNode::SEARCH_PRE_ORDER);
         $errMsg = 'Expected traversal order with replaced node should be [' . $expectedOrderStringPreOrder . '] - is [' . $this->orderString . '].';
         $this->assertEquals($expectedOrderStringPreOrder, $this->orderString, $errMsg);
@@ -463,11 +463,11 @@ final class GenericTreeNodeTest extends TestCase
         $newSubtreeRoot->addChild($newSubtreeSecondChild);
         $newSubtreeRoot->addChild($newSubtreeThirdChild);
 
-        $expectedOrderStringPreOrder =  'root, 1, 2, 2.1, 2.1.1, 2.1.2, A, B, C, C.1, C.2, D';
+        $expectedOrderStringPreOrder =  'root, 1, 2, 2.1, 2.1.1, 2.1.2, A, B, C, C.1, C.2, D, 3, 3.1, 4, 5';
         $this->orderString = '';
         $tree = $this->demoTree->getDeepCopy();
         $tree->replaceDescendantById('2.2', $newSubtreeRoot);
-        $this->idToFind = 'D';
+        $this->idToFind = '5';
         $tree->findNode($this->orderWritingFindPredicate, TreeNode::SEARCH_PRE_ORDER);
         $errMsg = 'Expected traversal order with replaced node should be [' . $expectedOrderStringPreOrder . '] - is [' . $this->orderString . '].';
         $this->assertEquals($expectedOrderStringPreOrder, $this->orderString, $errMsg);
