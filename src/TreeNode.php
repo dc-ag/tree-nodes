@@ -27,6 +27,8 @@ interface TreeNode
      */
     public function getPayload();
 
+    public function setPayload($payload): void;
+
     /**
      * @return int
      */
@@ -115,7 +117,7 @@ interface TreeNode
      */
     public function replaceDescendant(TreeNode $descendantToReplace, TreeNode $replacementSubtree): void;
 
-        /**
+    /**
      * @param string $childToReplace
      * @param TreeNode $replacementChildNode
      */
@@ -124,7 +126,7 @@ interface TreeNode
     public function setChildren(TreeNode ...$nodes): void;
 
     /**
-     * Requires payloads to be clone-able
+     * Requires object payloads to be clone-able
      *
      * @return TreeNode
      */

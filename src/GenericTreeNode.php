@@ -53,6 +53,11 @@ class GenericTreeNode implements TreeNode
         return $this->payload;
     }
 
+    public function setPayload($payload): void
+    {
+        $this->payload = $payload;
+    }
+
     /**
      * @return int
      */
@@ -227,16 +232,17 @@ class GenericTreeNode implements TreeNode
             }
         };
         
+        $visitor = new GenericVisitor($visitorFn);
         try {
             switch ($searchOrder) {
                 case TreeNode::SEARCH_PRE_ORDER:
-                    $this->nonSortablePreOrderVisitingFunction($this, $visitorFn);
+                    $visitor->visitPreOrder($this);
                     break;
                 case TreeNode::SEARCH_POST_ORDER:
-                    $this->nonSortablePostOrderVisitingFunction($this, $visitorFn);
+                    $visitor->visitPostOrder($this);
                     break;
                 case TreeNode::SEARCH_LEVEL_ORDER:
-                    $this->nonSortableLevelOrderVisitingFunction($this, $visitorFn);
+                    $visitor->visitLevelOrder($this);
                     break;
                 default:
                     throw new InvalidArgumentException('Unknown search-order code [' . $searchOrder . ']. Please referr to constants in TreeNode-interface.');
@@ -247,60 +253,6 @@ class GenericTreeNode implements TreeNode
         }
         return $foundNode;
     }
-
-    protected function nonSortablePreOrderVisitingFunction(TreeNode $treeNode, callable $visitorFn): void
-    {
-        $visitorFn($treeNode);
-        $childIterator = new ArrayIterator($treeNode->getChildren());
-        if ($treeNode->getNoOfChildren() > 0) {
-            while ($childIterator->valid()) {
-                $currChild = $childIterator->current();
-                $this->nonSortablePreOrderVisitingFunction($currChild, $visitorFn);
-                $childIterator->next();
-            }
-        }       
-
-    }
-
-    protected function nonSortablePostOrderVisitingFunction(TreeNode $treeNode, callable $visitorFn): void
-    {
-        $childIterator = new ArrayIterator($treeNode->getChildren());
-        if ($treeNode->getNoOfChildren() > 0) { 
-            while ($childIterator->valid()) {
-                $currChild = $childIterator->current();
-                $this->nonSortablePostOrderVisitingFunction($currChild, $visitorFn);
-                $visitorFn($currChild);
-                $childIterator->next();
-            }
-        }
-
-    }
-
-    protected function nonSortableLevelOrderVisitingFunction(TreeNode $treeNode, callable $visitorFn): void
-    {
-        $visitorFn($treeNode);
-
-        $nextLevelNodes = [];
-        $currlevelNodes = $treeNode->getChildren();
-
-        $collectNextLevelNodes = static function(TreeNode $treeNode) use (&$nextLevelNodes) { 
-            $nextLevelNodes = [...$nextLevelNodes, ...$treeNode->getChildren()];
-       };
-
-       do {
-           while (!empty($currlevelNodes)) {
-               $currNode = \array_shift($currlevelNodes);
-               $collectNextLevelNodes($currNode);
-               $visitorFn($currNode);
-           }
-           $currlevelNodes = $nextLevelNodes;
-           $nextLevelNodes = [];
-       } while (
-           !empty($currlevelNodes)
-       );
-
-    }
-
     public function replaceDescendant(TreeNode $descendantToReplace, TreeNode $replacementSubtree): void
     {
         $descendantId = $descendantToReplace->getId();
@@ -368,9 +320,9 @@ class GenericTreeNode implements TreeNode
     }
 
     public function getDeepCopy(): TreeNode
-    {
-        
+    {        
         $clonedParent = new static($this->getId(), $this->clonePayload($this));
+        //Sets non-cloned children in cloned parent
         $clonedParent->setChildren(...$this->getChildren());
 
         $nextLevelParents = [];
@@ -378,8 +330,11 @@ class GenericTreeNode implements TreeNode
         $iterator = new ArrayIterator($currParents);
         while ($iterator->valid()) {
             $currParent = $iterator->current();
+            //get non-cloned children
             $currChildren = $currParent->getChildren();
+            //empty children in cloned parent
             $currParent->setChildren();
+            //iterate over non-cloned children and add a clone to the cloned parent
             foreach ($currChildren as $currChild) {
                 $newCurrChild = new static($currChild->getId(), $this->clonePayload($currChild));
                 $newCurrChild->setChildren(...$currChild->getChildren());

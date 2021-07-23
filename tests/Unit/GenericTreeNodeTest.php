@@ -15,6 +15,8 @@ use Closure;
 /**
  * @covers TreeNodes\GenericTreeNode
  * @uses TreeNodes\GenericIdGenerator
+ * @uses TreeNodes\Visitor
+ * @uses TreeNodes\GenericVisitor
  */
 final class GenericTreeNodeTest extends TestCase
 {
@@ -100,12 +102,27 @@ final class GenericTreeNodeTest extends TestCase
         $this->assertTrue($payload === $treeNode->getPayload());
     }
 
+    public function testGetterLevelRoot(): void
+    {
+        $treeNode = new GenericTreeNode("1", null);
+        $level = $treeNode->getLevel();
+        $this->assertTrue(0 === $level, "Wrong level reported [$level] - should be [0].");
+    }
+
     public function testGetterLevel(): void
     {
-        $payload = $this->faker->domainName;
-        $treeNode = new GenericTreeNode(null, $payload);
+        $treeNode = new GenericTreeNode("1", null);
+        $level1 = new GenericTreeNode("1.1", null);
+        $level2_0 = new GenericTreeNode("1.1.1", null);
+        $level2_1 = new GenericTreeNode("1.1.2",null);
+        $level3 = new GenericTreeNode ("1.1.2.1",null);
 
-        $this->assertTrue($treeNode->getLevel() === 0);
+        $level2_1->addChild($level3);
+        $level1->setChildren($level2_0, $level2_1);
+        $treeNode->addChild($level1);
+
+        $level = $level3->getLevel();
+        $this->assertTrue(3 === $level, "Wrong level reported [$level] - should be [3].");
     }
 
     public function testGetterSetterParent(): void
@@ -222,23 +239,25 @@ final class GenericTreeNodeTest extends TestCase
         $this->assertTrue($treeNode->isRoot());
     }
 
-    public function testGetterRootForTreeNode(): void
+    public function testGetRootAtRoot(): void
     {
-        $payloadChildFirst = $this->faker->domainName;
-        $treeNodeChildFirst = new GenericTreeNode(null, $payloadChildFirst);
+        $node = new GenericTreeNode(null, null);
+        $this->assertEquals($node, $node->getRootForTreeNode());
+    }
 
-        $payloadChildSecond = $this->faker->domainName;
-        $treeNodeChildSecond = new GenericTreeNode(null, $payloadChildSecond);
+    public function testGetRootForNestedTreeNode(): void
+    {
+        $treeNodeChildFirst = new GenericTreeNode(null, null);
 
-        $payloadChildThird = $this->faker->domainName;
-        $treeNodeChildThird = new GenericTreeNode(null, $payloadChildThird);
+        $treeNodeChildSecond = new GenericTreeNode(null, null);
 
-        $payloadChildThirdChild = $this->faker->domainName;
-        $treeNodeChildThirdChild = new GenericTreeNode(null, $payloadChildThirdChild);
+        $treeNodeChildThird = new GenericTreeNode(null, null);
+
+        $treeNodeChildThirdChild = new GenericTreeNode(null, null);
         $treeNodeChildThird->addChild($treeNodeChildThirdChild);
 
-        $payload = $this->faker->domainName;
-        $treeNode = new GenericTreeNode(null, $payload);
+        
+        $treeNode = new GenericTreeNode(null, null);
         $treeNode->addChild($treeNodeChildFirst);
         $treeNode->addChild($treeNodeChildSecond);
         $treeNode->addChild($treeNodeChildThird);
@@ -522,6 +541,18 @@ final class GenericTreeNodeTest extends TestCase
         $tree->findNode($this->orderWritingFindPredicate, TreeNode::SEARCH_PRE_ORDER);
         $errMsg = 'Expected traversal order with replaced node should be [' . $expectedOrderStringPreOrder . '] - is [' . $this->orderString . '].';
         $this->assertEquals($expectedOrderStringPreOrder, $this->orderString, $errMsg);
+    }
+
+    public function testSetPayload(): void
+    {
+        $payload = new \stdClass();
+        $payload->value = "expectedValue";
+
+        $node = new GenericTreeNode('root', 'initialValue');
+        $node->setPayload($payload);
+
+        $returnedPayload = $node->getPayload();
+        $this->assertEquals($payload, $returnedPayload);
     }
 
 }
