@@ -6,7 +6,7 @@ namespace TreeNodes;
 
 trait canActAsSortableTreeNode
 {
-    private array $childrenWithSorting = [];
+    protected array $childrenWithSorting = [];
 
     /**
      * @return int

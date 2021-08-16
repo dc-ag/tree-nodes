@@ -13,10 +13,10 @@ use RangeException;
 
 class GenericTreeNode implements TreeNode
 {
-    private string $id;
-    private $payload;
-    private ?TreeNode $parent = null;
-    private array $children = [];
+    protected string $id;
+    protected $payload;
+    protected ?TreeNode $parent = null;
+    protected array $children = [];
     protected ?string $rootId = null;
 
 

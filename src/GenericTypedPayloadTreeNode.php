@@ -8,8 +8,8 @@ use InvalidArgumentException;
 
 class GenericTypedPayloadTreeNode extends GenericTreeNode implements TypedPayloadTreeNode
 {
-    private string $payloadType;
-    private ?string $payloadObjectFQDN = null;
+    protected string $payloadType;
+    protected ?string $payloadObjectFQDN = null;
 
     /**
      *
