@@ -7,7 +7,7 @@ namespace TreeNodes;
 class GenericTreeNodeVisitor implements TreeNodeVisitor
 {
     /** @var callable */
-    private $visitorCallable;
+    protected $visitorCallable;
 
     /**
      *
