@@ -36,11 +36,17 @@ class GenericTreeNodeVisitor implements TreeNodeVisitor
                 $leftmostChild = $leftmostChild->getLeftSibling();
             }
         }
-        ($this->visitorCallable)($node);
-        $this->visitPreOrder($leftmostChild, false);
-        if (!$atRoot) {
-            $this->visitPreOrder($node->getRightSibling(), false);
+        try {
+            ($this->visitorCallable)($node);
+            $this->visitPreOrder($leftmostChild, false);
+            
+            if (!$atRoot) {
+                $this->visitPreOrder($node->getRightSibling(), false);
+            }
+        } catch (EarlyTraversalTerminationException $e) {
+            return;
         }
+
     }
 
     /**
@@ -62,10 +68,14 @@ class GenericTreeNodeVisitor implements TreeNodeVisitor
             }
         }
 
-        $this->visitPostOrder($leftmostChild, false);
-        ($this->visitorCallable)($node);
-        if (!$atRoot) {
-            $this->visitPostOrder($node->getRightSibling(), false);
+        try {
+            $this->visitPostOrder($leftmostChild, false);
+            ($this->visitorCallable)($node);
+            if (!$atRoot) {
+                $this->visitPostOrder($node->getRightSibling(), false);
+            }
+        } catch (EarlyTraversalTerminationException $e) {
+            return;
         }
     }
 
@@ -88,15 +98,18 @@ class GenericTreeNodeVisitor implements TreeNodeVisitor
         $collectNextLevelNodes = static function(SortableTreeNode $treeNode) use (&$nextLevelNodes) { 
              $nextLevelNodes = [...$nextLevelNodes, ...$treeNode->getChildren()];
         };
-
-        do {
-            while (!empty($currlevelNodes)) {
-                $currNode = \array_shift($currlevelNodes);
-                $collectNextLevelNodes($currNode);
-                ($this->visitorCallable)($currNode);
-            }
-            $currlevelNodes = $nextLevelNodes;
-            $nextLevelNodes = [];
-        } while (!empty($currlevelNodes));
+        try {
+            do {
+                while (!empty($currlevelNodes)) {
+                    $currNode = \array_shift($currlevelNodes);
+                    $collectNextLevelNodes($currNode);
+                    ($this->visitorCallable)($currNode);
+                }
+                $currlevelNodes = $nextLevelNodes;
+                $nextLevelNodes = [];
+            } while (!empty($currlevelNodes));
+        } catch (EarlyTraversalTerminationException $e) {
+            return;
+        }
     }
 }
