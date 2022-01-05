@@ -18,14 +18,15 @@ class GenericSortableTreeNode extends GenericTreeNode implements SortableTreeNod
     public function addChildWithSorting(SortableTreeNode $child, ?int $sorting = null): void
     {
         if ($sorting !== null && !array_key_exists($sorting, $this->childrenWithSorting)) {
-            $this->childrenWithSorting[$sorting] = $child;
+            $newSorting = $sorting;
+            $this->childrenWithSorting[$newSorting] = $child;
         } else {
             $currentHighestSorting = 0;
             if ($this->getNoOfChildrenWithSorting() > 0) {
                 $currentHighestSorting = max(array_keys($this->childrenWithSorting));
             }
-
-            $this->childrenWithSorting[($currentHighestSorting + 1)] = $child;
+            $newSorting = $currentHighestSorting + 1;
+            $this->childrenWithSorting[$newSorting] = $child;
         }
         parent::addChild($child);
     }
@@ -33,8 +34,9 @@ class GenericSortableTreeNode extends GenericTreeNode implements SortableTreeNod
     /**
      * @param SortableTreeNode $childToRemove
      */
-    public function removeChildWithSorting(SortableTreeNode $childToRemove): void
+    public function removeChildWithSorting(SortableTreeNode $childToRemove, ?array &$changedNodes = null): void
     {
+        $changedNodes = null === $changedNodes ? [] : $changedNodes;
         $sortingChildToRemove = $childToRemove->getPerLevelSorting();
 
         ksort($this->childrenWithSorting);
@@ -47,6 +49,7 @@ class GenericSortableTreeNode extends GenericTreeNode implements SortableTreeNod
             } elseif ($currentSorting > $sortingChildToRemove) {
                 unset($this->childrenWithSorting[$currentSorting]);
                 $this->childrenWithSorting[($currentSorting - 1)] = $childWithSorting;
+                $changedNodes[] = $childWithSorting;
             }
         }
 
