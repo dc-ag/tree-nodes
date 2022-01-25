@@ -11,6 +11,7 @@ use TreeNodes\GenericSortableTreeNode;
 use TreeNodes\TreeNodeVisitor;
 use TreeNodes\GenericTreeNodeVisitor;
 use TreeNodes\SortableTreeNode;
+use TreeNodes\EarlyTraversalTerminationException;
 
 final class GenericTreeNodeVisitorTest extends TestCase
 {
@@ -102,6 +103,71 @@ final class GenericTreeNodeVisitorTest extends TestCase
         $this->orderString = "";
         $expectedOrder = "root, 1, 2, 3, 4, 5, 2.1, 2.2, 3.1, 2.1.1, 2.1.2";
         $this->orderWritingVisitor->visitLevelOrder($sortableTreeNode);
+        $errMsg = 'Expected order: [' . $expectedOrder . '] - actual order [' . $this->orderString . '].';
+        $this->assertEquals($expectedOrder, $this->orderString, $errMsg);
+    }
+
+    
+    public function testEarlyPreOrderTraversalTermination(): void
+    {
+        $sortableTreeNode = $this->demoTree;
+        $this->orderString = "";
+        $expectedOrder = "root, 1, 2, 2.1";
+        $visitFn = function(SortableTreeNode $treeNode) {
+            $separator = '' === $this->orderString ? '' : ', ';
+            $id = $treeNode->getId();
+            $this->orderString .= $separator . $id;
+            if ('2.1' === $id) {
+                throw new EarlyTraversalTerminationException();
+            }
+        };
+        $visitor = new GenericTreeNodeVisitor($visitFn);
+        try {
+            $visitor->visitPreOrder($sortableTreeNode);
+        } catch (EarlyTraversalTerminationException) {}
+        $errMsg = 'Expected order: [' . $expectedOrder . '] - actual order [' . $this->orderString . '].';
+        $this->assertEquals($expectedOrder, $this->orderString, $errMsg);
+    }
+
+    public function testEarlyPostOrderTraversalTermination(): void
+    {
+        $sortableTreeNode = $this->demoTree;
+        $this->orderString = "";
+        $expectedOrder = "1, 2.1.1, 2.1.2, 2.1";
+        $visitFn = function(SortableTreeNode $treeNode) {
+            $separator = '' === $this->orderString ? '' : ', ';
+            $id = $treeNode->getId();
+            $this->orderString .= $separator . $id;
+            if ('2.1' === $id) {
+                throw new EarlyTraversalTerminationException();
+            }
+        };
+        $visitor = new GenericTreeNodeVisitor($visitFn);
+        try {
+            $visitor->visitPostOrder($sortableTreeNode);
+        } catch (EarlyTraversalTerminationException) {}
+
+        $errMsg = 'Expected order: [' . $expectedOrder . '] - actual order [' . $this->orderString . '].';
+        $this->assertEquals($expectedOrder, $this->orderString, $errMsg);
+    }
+
+    public function testEarlyLevelOrderTraversalTermination(): void
+    {
+        $sortableTreeNode = $this->demoTree;
+        $this->orderString = "";
+        $expectedOrder = "root, 1, 2, 3, 4, 5, 2.1";
+        $visitFn = function(SortableTreeNode $treeNode) {
+            $separator = '' === $this->orderString ? '' : ', ';
+            $id = $treeNode->getId();
+            $this->orderString .= $separator . $id;
+            if ('2.1' === $id) {
+                throw new EarlyTraversalTerminationException();
+            }
+        };
+        $visitor = new GenericTreeNodeVisitor($visitFn);
+        try {
+            $visitor->visitLevelOrder($sortableTreeNode);
+        } catch (EarlyTraversalTerminationException) {}
         $errMsg = 'Expected order: [' . $expectedOrder . '] - actual order [' . $this->orderString . '].';
         $this->assertEquals($expectedOrder, $this->orderString, $errMsg);
     }

@@ -38,6 +38,7 @@ class GenericTreeNodeVisitor implements TreeNodeVisitor
         }
         ($this->visitorCallable)($node);
         $this->visitPreOrder($leftmostChild, false);
+        
         if (!$atRoot) {
             $this->visitPreOrder($node->getRightSibling(), false);
         }
@@ -67,6 +68,7 @@ class GenericTreeNodeVisitor implements TreeNodeVisitor
         if (!$atRoot) {
             $this->visitPostOrder($node->getRightSibling(), false);
         }
+
     }
 
             /**
@@ -88,7 +90,6 @@ class GenericTreeNodeVisitor implements TreeNodeVisitor
         $collectNextLevelNodes = static function(SortableTreeNode $treeNode) use (&$nextLevelNodes) { 
              $nextLevelNodes = [...$nextLevelNodes, ...$treeNode->getChildren()];
         };
-
         do {
             while (!empty($currlevelNodes)) {
                 $currNode = \array_shift($currlevelNodes);
@@ -98,5 +99,6 @@ class GenericTreeNodeVisitor implements TreeNodeVisitor
             $currlevelNodes = $nextLevelNodes;
             $nextLevelNodes = [];
         } while (!empty($currlevelNodes));
+        
     }
 }
