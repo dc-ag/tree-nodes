@@ -30,6 +30,9 @@ trait canActAsSortableTreeNode
     public function getLeftSibling(): ?SortableTreeNode
     {
         $leftSibling = null;
+        if ($this->isRoot() || 1 === $this->sorting) {
+            return $leftSibling;
+        }
         $parent = $this->getParent();
         if ($parent !== null && $parent instanceof SortableTreeNode) {
             $parentChildren = $parent->getChildrenWithSorting();
@@ -55,8 +58,15 @@ trait canActAsSortableTreeNode
     {
         $rightSibling = null;
         $parent = $this->getParent();
+        if ($this->isRoot()) {
+            return $leftSibling;
+        }
         if ($parent !== null && $parent instanceof SortableTreeNode) {
             $parentChildren = $parent->getChildrenWithSorting();
+            $maxSorting = max(0,...\array_keys($parentChildren));
+            if ($this->sorting === $maxSorting) {
+                return null;
+            }
             /** @var TreeNode $child */
             foreach ($parentChildren as $sorting => $child) {
                 if ($child->getId() === $this->getId()) {
