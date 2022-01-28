@@ -30,18 +30,26 @@ trait canActAsSortableTreeNode
     public function getLeftSibling(): ?SortableTreeNode
     {
         $leftSibling = null;
-        if ($this->isRoot() || 1 === $this->sorting) {
+        $thisId = $this->getId();
+        if ($this->isRoot()) {
             return $leftSibling;
         }
+        $initialId = $this->getId();
         $parent = $this->getParent();
         if ($parent !== null && $parent instanceof SortableTreeNode) {
             $parentChildren = $parent->getChildrenWithSorting();
             /** @var TreeNode $child */
             foreach ($parentChildren as $sorting => $child) {
                 if ($child->getId() === $this->getId()) {
-                    if (isset($parentChildren[($sorting - 1)])) {
-                        $leftSibling = $parentChildren[($sorting - 1)];
-                        break;
+                    if (1 === $sorting) {
+                        return null;
+                    }
+                    $newSorting = $sorting - 1;
+                    if (array_key_exists($newSorting, $parentChildren)) {
+                        if (($parentChildren[$newSorting])->getId() !== $initialId) {
+                            $leftSibling = $parentChildren[$newSorting];
+                            break;
+                        }
                     }
                 }
             }
@@ -61,6 +69,7 @@ trait canActAsSortableTreeNode
         if ($this->isRoot()) {
             return $leftSibling;
         }
+        $initialId = $this->getId();
         if ($parent !== null && $parent instanceof SortableTreeNode) {
             $parentChildren = $parent->getChildrenWithSorting();
             $maxSorting = max(0,...\array_keys($parentChildren));
@@ -70,9 +79,14 @@ trait canActAsSortableTreeNode
             /** @var TreeNode $child */
             foreach ($parentChildren as $sorting => $child) {
                 if ($child->getId() === $this->getId()) {
-                    if (isset($parentChildren[($sorting + 1)])) {
-                        $rightSibling = $parentChildren[($sorting + 1)];
-                        break;
+                    $newSorting = $sorting + 1;
+                    if (array_key_exists($newSorting, $parentChildren)) {
+                        $currRightChild = $parentChildren[$newSorting];
+                        $currRightChildId = $currRightChild->getId();
+                        if ($currRightChildId !== $initialId) {
+                            $rightSibling = $currRightChild;
+                            break;
+                        }
                     }
                 }
             }

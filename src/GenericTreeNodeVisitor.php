@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace TreeNodes;
 
+use DynCom\dc\utils\AggregateTreeNode\AggregateTreeNode;
+
 class GenericTreeNodeVisitor implements TreeNodeVisitor
 {
     /** @var callable */
@@ -29,11 +31,17 @@ class GenericTreeNodeVisitor implements TreeNodeVisitor
         if (null === $node) {
             return;
         }
+        $nodeId = $node->getId();
         $leftmostChild = null;
+        $leftmostChildId = null;
         if ($node->getNoOfChildrenWithSorting() > 0) {
-            $leftmostChild = reset($node->getChildrenWithSorting());
-            while ($leftmostChild->getLeftSibling() !== null) {
-                $leftmostChild = $leftmostChild->getLeftSibling();
+            $children = $node->getChildrenWithSorting();
+            $leftmostChild = reset($children);
+            $currLeftSibling = $leftmostChild->getLeftSibling();
+            while ($currLeftSibling !== null) {
+                $leftmostChild = $currLeftSibling;
+                $leftmostChildId = $leftmostChild->getId();
+                $currLeftSibling = $leftmostChild->getLeftSibling();
             }
         }
         ($this->visitorCallable)($node);

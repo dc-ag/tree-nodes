@@ -13,16 +13,15 @@ trait canProcessTreeNodeSortRequests
     public static function processNewSortingRequest(SortableTreeNode $treeNodeToSort, int $newSorting, ?array &$changedNodes = null): void
     {
         $changedNodes = null === $changedNodes ? [] : $changedNodes;
+        $currSorting = $treeNodeToSort->getPerLevelSorting();
         $parentTreeNode = $treeNodeToSort->getParent();
 
         if ($parentTreeNode instanceof SortableTreeNode && $parentTreeNode->getNoOfChildrenWithSorting() > 0) {
 
-            $currSorting = $treeNodeToSort->getPerLevelSorting();
-
             if ($currSorting === $newSorting) {
                 return;
             }
-            $changedNodes[] = $treeNodeToSort;
+            $changedNodes[$treeNodeToSort->getId()] = $treeNodeToSort;
             $minAffectedSorting = min($currSorting, $newSorting);
             $maxAffectedSorting = max($currSorting, $newSorting);
             $targetMovesUp = $newSorting > $currSorting;
@@ -32,7 +31,12 @@ trait canProcessTreeNodeSortRequests
             $newChildArray = [];
 
             /** @var SortableTreeNode $currNode */
+            $locallyChangedNodes = [];
+            $allNodes = [];
             foreach ($childrenWithSortingRef as $sorting => $currNode) {
+                $sorting = (int)$sorting;
+                $currId = $currNode->getId();
+                $allNodes[$currId] = $currNode;
                 if ($sorting < $minAffectedSorting || $sorting > $maxAffectedSorting) {
                     $newChildArray[$sorting] = $currNode;
                     continue;
@@ -40,17 +44,38 @@ trait canProcessTreeNodeSortRequests
                 if ($sorting === $currSorting) {
                     continue;
                 }
-                $changedNodes[] = $currNode;
+
+                $changedNodes[$currNode->getId()] = $currNode;
 
                 if ($targetMovesUp) {
-                    $newChildArray[($sorting - 1)] = $currNode;
+                    $newLocalSorting = $sorting- 1;
+                    $locallyChangedNodes[$currNode->getId()]['node'] = $currNode;
+                    $locallyChangedNodes[$currNode->getId()]['originalSorting'] = $currNode->getPerLevelSorting();
+                    $locallyChangedNodes[$currNode->getId()]['targetSorting'] = $newLocalSorting;
+                    $newChildArray[$newLocalSorting] = $currNode;
                 } else {
-                    $newChildArray[($sorting + 1)] = $currNode;
+                    $newLocalSorting = $sorting + 1;
+                    $locallyChangedNodes[$currNode->getId()]['node'] = $currNode;
+                    $locallyChangedNodes[$currNode->getId()]['originalSorting'] = $currNode->getPerLevelSorting();
+                    $locallyChangedNodes[$currNode->getId()]['targetSorting'] = $newLocalSorting;
+                    $newChildArray[$newLocalSorting] = $currNode;
                 }
             }
             $newChildArray[$newSorting] = $treeNodeToSort;
             ksort($newChildArray);
             $childrenWithSortingRef = $newChildArray;
+            $newChildren = $parentTreeNode->getChildrenWithSorting();
+            $newChildrenForPrint = array_map(static fn($n) => $n->getId(), $newChildren);
+            foreach ($newChildrenForPrint as $sorting => $newChildId) {
+                $perLevelSorting = ($allNodes[$newChildId])->getPerLevelSorting();
+            }
+            foreach ($locallyChangedNodes as $changedNodeArr) {
+                $changedNode = $changedNodeArr['node'];
+                $changedNodeId = $changedNode->getId();
+                $changedNodeCurrSorting = $changedNode->getPerLevelSorting();
+                $changedNodeOrigSorting = $changedNodeArr['originalSorting'];
+                $changedNodeTargetSorting = $changedNodeArr['targetSorting'];
+            }
         }
     }
 
@@ -65,9 +90,11 @@ trait canProcessTreeNodeSortRequests
     {
         /** @var SortableTreeNode $nodeToMoveParent */
         $nodeToMoveParent = $nodeToMove->getParent();
-        if ($nodeToMoveParent !== $newParentNode) {
-          $nodeToMoveParent->removeChildWithSorting($nodeToMove, $changedNodes);
-          $newParentNode->addChildWithSorting($nodeToMove);
+        $nodeToMoveParentId = $nodeToMoveParent->getId();
+        $newParentNodeId = $newParentNode->getId();
+        if ($nodeToMoveParentId !== $newParentNodeId) {
+            $nodeToMoveParent->removeChildWithSorting($nodeToMove, $changedNodes);
+            $newParentNode->addChildWithSorting($nodeToMove);
         }
         GenericSortableTreeNode::processNewSortingRequest($nodeToMove, $newSorting, $changedNodes);
     }
