@@ -73,12 +73,12 @@ trait canActAsSortableTreeNode
         if ($parent !== null && $parent instanceof SortableTreeNode) {
             $parentChildren = $parent->getChildrenWithSorting();
             $maxSorting = max(0,...\array_keys($parentChildren));
-            if ($this->sorting === $maxSorting) {
-                return null;
-            }
             /** @var TreeNode $child */
             foreach ($parentChildren as $sorting => $child) {
                 if ($child->getId() === $this->getId()) {
+                    if ($sorting === $maxSorting) {
+                        return null;
+                    }
                     $newSorting = $sorting + 1;
                     if (array_key_exists($newSorting, $parentChildren)) {
                         $currRightChild = $parentChildren[$newSorting];
@@ -163,3 +163,4 @@ trait canActAsSortableTreeNode
         return $height;
     }
 }
+
