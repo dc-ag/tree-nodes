@@ -19,18 +19,27 @@ class GenericTypedPayloadSortableTreeNode extends GenericTypedPayloadTreeNode im
      */
     public function addChildWithSorting(SortableTreeNode $child, ?int $sorting = null): void
     {
-        if ($sorting !== null && !array_key_exists($sorting, $this->childrenWithSorting)) {
+        $childId = $child->getId();
+        $parentId = $this->getId();
+        $children = $this->childrenWithSorting;
+        if ($sorting !== null && !array_key_exists($sorting, $children)) {
             $newSorting = $sorting;
             $this->childrenWithSorting[$newSorting] = $child;
         } else {
             $currentHighestSorting = 0;
             if ($this->getNoOfChildrenWithSorting() > 0) {
-                $currentHighestSorting = max(array_keys($this->childrenWithSorting));
+                $currentHighestSorting = max(array_keys($children));
             }
             $newSorting = $currentHighestSorting + 1;
             $this->childrenWithSorting[$newSorting] = $child;
         }
         parent::addChild($child);
+    }
+
+    public function removeAllChildren(): void
+    {
+        $this->children = [];
+        $this->childrenWithSorting = [];
     }
 
     /**
@@ -40,19 +49,32 @@ class GenericTypedPayloadSortableTreeNode extends GenericTypedPayloadTreeNode im
     {
         $changedNodes = null === $changedNodes ? [] : $changedNodes;
         $sortingChildToRemove = $childToRemove->getPerLevelSorting();
-
-        ksort($this->childrenWithSorting);
-
-        /** @var SortableTreeNode $childWithSorting */
+        $nodeToRemoveId = $childToRemove->getId();
+        $newChildArray = [];
+        $locallyChangedNodes = [];
         foreach ($this->childrenWithSorting as $sorting => $childWithSorting) {
+            $nodeId = $childWithSorting->getId();
             $currentSorting = $sorting;
-            if ($childWithSorting === $childToRemove) {
-                unset($this->childrenWithSorting[$sorting]);
-            } elseif ($currentSorting > $sortingChildToRemove) {
-                unset($this->childrenWithSorting[$currentSorting]);
-                $this->childrenWithSorting[($currentSorting - 1)] = $childWithSorting;
-                $changedNodes[] = $childWithSorting;
+            if ($nodeId === $nodeToRemoveId) {
+                //Do nothing
+            } elseif ($currentSorting < $sortingChildToRemove) {
+                $newChildArray[$currentSorting] = $childWithSorting;
+            }elseif ($currentSorting > $sortingChildToRemove) {
+                $newSorting = $currentSorting - 1;
+                $newChildArray[$newSorting] = $childWithSorting;
+                $changedNodes[$nodeId] = $childWithSorting;
+                $id = $childWithSorting->getId();
+                $locallyChangedNodes[$id]['node'] = $childWithSorting;
+                $locallyChangedNodes[$id]['targetSorting'] = $newSorting;
+                $locallyChangedNodes[$id]['originalSorting'] = $sorting;
             }
+        }
+        ksort($newChildArray);
+        $this->childrenWithSorting = $newChildArray;
+        foreach ($locallyChangedNodes as $id => $changedNodeArr) {
+            $changedNode = $changedNodeArr['node'];
+            $targetSorting = $changedNodeArr['targetSorting'];
+            $originalSorting = $changedNodeArr['originalSorting'];
         }
 
         parent::removeChild($childToRemove);

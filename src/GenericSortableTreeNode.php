@@ -38,20 +38,26 @@ class GenericSortableTreeNode extends GenericTreeNode implements SortableTreeNod
     {
         $changedNodes = null === $changedNodes ? [] : $changedNodes;
         $sortingChildToRemove = $childToRemove->getPerLevelSorting();
-
-        ksort($this->childrenWithSorting);
+        $nodeToRemoveId = $childToRemove->getId();
 
         /** @var SortableTreeNode $childWithSorting */
+        $newChildArray = [];
+
         foreach ($this->childrenWithSorting as $sorting => $childWithSorting) {
+            $nodeId = $childWithSorting->getId();
             $currentSorting = $sorting;
-            if ($childWithSorting === $childToRemove) {
-                unset($this->childrenWithSorting[$sorting]);
-            } elseif ($currentSorting > $sortingChildToRemove) {
-                unset($this->childrenWithSorting[$currentSorting]);
-                $this->childrenWithSorting[($currentSorting - 1)] = $childWithSorting;
-                $changedNodes[] = $childWithSorting;
+            if ($nodeId === $nodeToRemoveId) {
+                //Do nothing
+            } elseif ($currentSorting < $sortingChildToRemove) {
+                $newChildArray[$currentSorting] = $childWithSorting;
+            }elseif ($currentSorting > $sortingChildToRemove) {
+                $newChildArray[($currentSorting - 1)] = $childWithSorting;
+                $changedNodes[$nodeId] = $childWithSorting;
+                $changedNodeSorting = $childWithSorting->getPerLevelSorting();
             }
         }
+        ksort($newChildArray);
+        $this->childrenWithSorting = $newChildArray;
 
         parent::removeChild($childToRemove);
     }
