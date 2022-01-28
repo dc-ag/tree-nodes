@@ -64,18 +64,6 @@ trait canProcessTreeNodeSortRequests
             $newChildArray[$newSorting] = $treeNodeToSort;
             ksort($newChildArray);
             $childrenWithSortingRef = $newChildArray;
-            $newChildren = $parentTreeNode->getChildrenWithSorting();
-            $newChildrenForPrint = array_map(static fn($n) => $n->getId(), $newChildren);
-            foreach ($newChildrenForPrint as $sorting => $newChildId) {
-                $perLevelSorting = ($allNodes[$newChildId])->getPerLevelSorting();
-            }
-            foreach ($locallyChangedNodes as $changedNodeArr) {
-                $changedNode = $changedNodeArr['node'];
-                $changedNodeId = $changedNode->getId();
-                $changedNodeCurrSorting = $changedNode->getPerLevelSorting();
-                $changedNodeOrigSorting = $changedNodeArr['originalSorting'];
-                $changedNodeTargetSorting = $changedNodeArr['targetSorting'];
-            }
         }
     }
 
