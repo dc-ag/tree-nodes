@@ -86,7 +86,13 @@ class GenericTreeNode implements TreeNode
     public function setParent(?TreeNode $parent): void
     {
         $this->parent = $parent;
-        $this->rootId = $parent !== null ? $parent->getRootId() : null;
+        $rootId = null;
+
+        if (null !== $parent) {
+            $rootId = $parent->isRoot() ? $parent->getId() : $parent->getRootId();
+        }
+
+        $this->rootId = $rootId;
 
         if ($this->getNoOfChildren() > 0) {
             /** @var TreeNode $child */
