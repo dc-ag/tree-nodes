@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace TreeNodes;
 
 use InvalidArgumentException;
+use Monolog\Logger;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 class GenericTypedPayloadSortableTreeNode extends GenericTypedPayloadTreeNode implements TypedPayloadSortableTreeNode, TreeNodeSortRequestProcessor
 {
@@ -19,20 +22,33 @@ class GenericTypedPayloadSortableTreeNode extends GenericTypedPayloadTreeNode im
      */
     public function addChildWithSorting(SortableTreeNode $child, ?int $sorting = null): void
     {
-        $childId = $child->getId();
-        $parentId = $this->getId();
         $children = $this->childrenWithSorting;
-        if ($sorting !== null && !array_key_exists($sorting, $children)) {
+        $newChildrenWithSorting = [];
+        if ($sorting !== null) {
             $newSorting = $sorting;
-            $this->childrenWithSorting[$newSorting] = $child;
-        } else {
-            $currentHighestSorting = 0;
-            if ($this->getNoOfChildrenWithSorting() > 0) {
-                $currentHighestSorting = max(array_keys($children));
+            if (!array_key_exists($sorting, $children)) {
+                $newChildrenWithSorting = $children;
+                $newChildrenWithSorting[$newSorting] = $child;
+                ksort($newChildrenWithSorting, SORT_NUMERIC);
+            } else {
+                foreach ($children as $currSorting => $currChild) {
+                   $newSortingForExistingChild = $currSorting;
+                   if ($currSorting >= $sorting) {
+                       $newSortingForExistingChild = $currSorting + 1;
+                       $currChild->setSorting($newSortingForExistingChild);
+                   }
+                    $newChildrenWithSorting[$newSortingForExistingChild] = $currChild;
+                   if ($currSorting === $sorting) {
+                       $newChildrenWithSorting[$sorting] = $child;
+                   }
+               }
+                ksort($newChildrenWithSorting, SORT_NUMERIC);
             }
-            $newSorting = $currentHighestSorting + 1;
-            $this->childrenWithSorting[$newSorting] = $child;
+        } else {
+            $newChildrenWithSorting = $children;
+            $newChildrenWithSorting[] = $child;
         }
+        $this->childrenWithSorting = $newChildrenWithSorting;
         parent::addChild($child);
     }
 
@@ -88,11 +104,13 @@ class GenericTypedPayloadSortableTreeNode extends GenericTypedPayloadTreeNode im
      */
     public function addChildWithTypedPayloadAndWithSorting(TypedPayloadSortableTreeNode $child, ?int $sorting = null): void
     {
+        $logger = null !== $logger ? $logger : new NullLogger();
         $childPayload = $child->getPayload();
         $childPayloadPHPType = \gettype($childPayload);
         $childPayloadPHPFQDN = \is_object($childPayload) ? $childPayload::class : null;
+
         if (parent::isTypedPayloadValid($child->getPayload(), $this->getPayloadType(), $this->getPayloadObjectFQDN())) {
-            $this->addChildWithSorting($child, $sorting);
+            $this->addChildWithSorting($child, $sorting, $logger);
         } else {
             throw new InvalidArgumentException("Could not add child with typed payload, type has to be [{$this->getPayloadType()}] - actual type [$childPayloadPHPType] with fqdn [$childPayloadPHPFQDN].");
         }

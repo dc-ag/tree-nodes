@@ -67,7 +67,7 @@ trait canActAsSortableTreeNode
         $rightSibling = null;
         $parent = $this->getParent();
         if ($this->isRoot()) {
-            return $leftSibling;
+            return $rightSibling;
         }
         $initialId = $this->getId();
         if ($parent !== null && $parent instanceof SortableTreeNode) {
