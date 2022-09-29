@@ -106,7 +106,7 @@ class GenericTypedPayloadSortableTreeNode extends GenericTypedPayloadTreeNode im
     {
         $childPayload = $child->getPayload();
         $childPayloadPHPType = \gettype($childPayload);
-        $childPayloadPHPFQDN = \is_object($childPayload) ? $childPayload::class : null;
+        $childPayloadPHPFQDN = \is_object($childPayload) ? get_class($childPayload) : null;
 
         if (parent::isTypedPayloadValid($child->getPayload(), $this->getPayloadType(), $this->getPayloadObjectFQDN())) {
             $this->addChildWithSorting($child, $sorting);
